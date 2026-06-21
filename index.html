@@ -145,12 +145,51 @@
             direction: rtl;
             text-align: right;
         }
+
+        /* Onboarding Highlighter Pulsar */
+        .onboard-highlight {
+            outline: 3px solid #f59e0b !important;
+            outline-offset: 3px;
+            border-radius: 8px !important;
+            animation: pulse-glow 1.5s infinite alternate;
+        }
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+            }
+            100% {
+                box-shadow: 0 0 0 12px rgba(245, 158, 11, 0);
+            }
+        }
     </style>
 </head>
 <body class="h-full flex flex-col text-slate-800 dark:text-slate-100 antialiased overflow-hidden bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
 
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Onboarding Guide HUD Overlay -->
+    <div id="onboarding-hud" class="fixed bottom-20 md:bottom-6 right-6 z-50 max-w-sm w-full bg-white dark:bg-slate-900 border-2 border-amber-500 rounded-2xl shadow-2xl p-4 transition-all duration-300 transform translate-y-0 scale-100 flex flex-col gap-3">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+            <div class="flex items-center gap-1.5 text-amber-600 dark:text-amber-500 font-bold text-xs uppercase tracking-wider">
+                <i data-lucide="compass" class="w-4 h-4 animate-spin-slow"></i>
+                <span id="tour-step-title">Step 1: Load Contract</span>
+            </div>
+            <button id="btn-skip-tour" class="text-[10px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 uppercase font-bold">Skip</button>
+        </div>
+        <div>
+            <p id="tour-step-desc" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                Click either <strong>"Sample NDA"</strong> or <strong>"Sample Lease"</strong> at the bottom of the left sidebar to load a template, or upload your own PDF contract!
+            </p>
+        </div>
+        <div class="flex items-center justify-between text-xs pt-1">
+            <span id="tour-step-indicator" class="text-[10px] text-slate-400 font-mono">1 of 5</span>
+            <div class="flex gap-2">
+                <button id="btn-tour-prev" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded text-[11px] font-semibold hidden">Back</button>
+                <button id="btn-tour-next" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded text-[11px] font-bold shadow-sm">Next Step</button>
+            </div>
+        </div>
+    </div>
 
     <!-- APP HEADER -->
     <header class="bg-navy-900 dark:bg-slate-950 text-white px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-800 shrink-0 shadow-md z-30">
@@ -251,11 +290,11 @@
                 </div>
                 
                 <!-- Demo Mock Data Injector (For direct Sandbox Playback) -->
-                <div class="mt-2.5 flex gap-2">
-                    <button id="btn-load-demo-1" class="flex-1 text-[10px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 py-1.5 rounded font-medium flex items-center justify-center gap-1">
+                <div class="mt-2.5 flex gap-2" id="tour-demo-zone">
+                    <button id="btn-load-demo-1" class="flex-1 text-[10px] bg-slate-850 hover:bg-slate-750 border border-slate-700 text-slate-300 py-1.5 rounded font-medium flex items-center justify-center gap-1 transition-all">
                         <i data-lucide="file-text" class="w-3 h-3 text-red-400"></i> Sample NDA
                     </button>
-                    <button id="btn-load-demo-2" class="flex-1 text-[10px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 py-1.5 rounded font-medium flex items-center justify-center gap-1">
+                    <button id="btn-load-demo-2" class="flex-1 text-[10px] bg-slate-850 hover:bg-slate-750 border border-slate-700 text-slate-300 py-1.5 rounded font-medium flex items-center justify-center gap-1 transition-all">
                         <i data-lucide="file-text" class="w-3 h-3 text-amber-400"></i> Sample Lease
                     </button>
                 </div>
@@ -299,8 +338,8 @@
                         <span id="txt-tab-dashboard">Compliance Risk Deck</span>
                     </button>
                     <button id="tab-viewer" class="px-3 py-2 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border-b-2 border-transparent hover:border-slate-300 rounded-t-lg flex items-center gap-1.5">
-                        <i data-lucide="file-text" class="w-3.5 h-3.5 text-slate-400"></i>
-                        <span id="txt-tab-viewer">Extracted Document text</span>
+                        <i data-lucide="eye" class="w-3.5 h-3.5 text-slate-400"></i>
+                        <span id="txt-tab-viewer">Document Page Preview</span>
                     </button>
                     <button id="tab-compare" class="hidden px-3 py-2 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border-b-2 border-transparent hover:border-slate-300 rounded-t-lg flex items-center gap-1.5">
                         <i data-lucide="columns" class="w-3.5 h-3.5 text-blue-600"></i>
@@ -318,7 +357,7 @@
             </div>
 
             <!-- WORKSPACE PANEL BODY -->
-            <div class="flex-1 overflow-y-auto p-4 md:p-6" id="panel-content-wrapper">
+            <div class="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50 dark:bg-slate-900" id="panel-content-wrapper">
                 
                 <!-- TAB CONTENT 1: RISK DASHBOARD -->
                 <div id="content-dashboard" class="space-y-6">
@@ -331,7 +370,7 @@
                         <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-2" id="txt-dash-empty-desc">Select an uploaded contract from the left sidebar pool, enter your API key, and tap the Audit command to run compliance evaluation.</p>
                         
                         <div class="mt-6">
-                            <button id="btn-trigger-audit" class="bg-red-700 hover:bg-red-800 text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow-md inline-flex items-center gap-2 transition-transform active:scale-95">
+                            <button id="btn-trigger-audit" class="bg-red-700 hover:bg-red-800 text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow-md inline-flex items-center gap-2 transition-all hover:scale-105 active:scale-95">
                                 <i data-lucide="shield-check" class="w-4 h-4"></i>
                                 <span id="txt-audit-btn">Trigger Contract Compliance Audit</span>
                             </button>
@@ -343,7 +382,7 @@
                         <!-- Top Overview Header: Doc Details & Missing Clauses -->
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                             <!-- Document Profile Card -->
-                            <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col justify-between">
+                            <div class="bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col justify-between shadow-sm">
                                 <div>
                                     <div class="flex items-center justify-between mb-2">
                                         <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase" id="txt-lbl-profile">Agreement Profile</span>
@@ -351,14 +390,14 @@
                                     </div>
                                     <h4 id="meta-doc-name" class="text-sm font-bold text-slate-800 dark:text-slate-100 line-clamp-2">Document Name</h4>
                                 </div>
-                                <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-between text-xs text-slate-500">
+                                <div class="mt-4 pt-4 border-t border-slate-150 dark:border-slate-800 flex justify-between text-xs text-slate-500">
                                     <span id="txt-lbl-duration">Duration:</span>
                                     <span id="meta-duration" class="font-medium text-slate-700 dark:text-slate-300">Not Analyzed</span>
                                 </div>
                             </div>
 
                             <!-- Executive Term Profile -->
-                            <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-2">
+                            <div class="bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-2 shadow-sm">
                                 <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase" id="txt-lbl-terms">Key Signatures & Terms</span>
                                 <div class="text-xs space-y-1.5">
                                     <div class="flex justify-between">
@@ -377,7 +416,7 @@
                             </div>
 
                             <!-- Missing Clauses Alert Area -->
-                            <div class="bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/60 rounded-xl p-4 flex flex-col justify-between">
+                            <div class="bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/60 rounded-xl p-4 flex flex-col justify-between shadow-sm">
                                 <div>
                                     <div class="flex items-center gap-1.5 text-amber-800 dark:text-amber-400 mb-2">
                                         <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600"></i>
@@ -408,14 +447,14 @@
                     </div>
                 </div>
 
-                <!-- TAB CONTENT 2: TEXT VIEWER -->
+                <!-- TAB CONTENT 2: TEXT/PAGE PREVIEW -->
                 <div id="content-viewer" class="hidden space-y-4">
-                    <div class="bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-lg p-3 flex justify-between items-center shrink-0">
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3 flex justify-between items-center shrink-0 shadow-sm">
                         <div class="flex items-center gap-2">
-                            <i data-lucide="eye" class="w-4 h-4 text-navy-800 dark:text-slate-200"></i>
-                            <span class="text-xs font-bold text-slate-700 dark:text-slate-300" id="txt-lbl-viewer-title">Interactive Markup Explorer</span>
+                            <i data-lucide="file-text" class="w-4 h-4 text-navy-800 dark:text-slate-200"></i>
+                            <span class="text-xs font-bold text-slate-700 dark:text-slate-300" id="txt-lbl-viewer-title">Interactive Markup Explorer (Paginated PDF Preview)</span>
                         </div>
-                        <span class="text-[10px] bg-slate-200 dark:bg-slate-850 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded font-mono" id="viewer-word-count">0 words</span>
+                        <span class="text-[10px] bg-slate-100 dark:bg-slate-850 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded font-mono" id="viewer-word-count">0 words</span>
                     </div>
                     
                     <div id="viewer-empty" class="text-center py-16">
@@ -423,9 +462,25 @@
                         <p class="text-xs text-slate-400" id="txt-viewer-empty">Choose a document from the left list to explore parsed context.</p>
                     </div>
 
-                    <!-- Parsed Document Text Render Box -->
-                    <div id="viewer-container" class="hidden border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-950 p-4 md:p-6 min-h-[350px] max-h-[600px] overflow-y-auto font-mono text-xs leading-relaxed whitespace-pre-wrap text-slate-700 dark:text-slate-300 select-text">
-                        <!-- Raw markup injected here -->
+                    <!-- Paginated Page Container with Real Document Shadow & A4 Proportions -->
+                    <div id="viewer-canvas-outer" class="hidden flex flex-col gap-4">
+                        <div class="flex justify-center">
+                            <!-- The Simulated A4 Sheet -->
+                            <div class="w-full max-w-[800px] aspect-[1/1.414] bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 p-8 md:p-12 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 transition-all text-xs font-mono leading-relaxed select-text overflow-y-auto whitespace-pre-wrap relative" id="viewer-container">
+                                <!-- Raw markup injected here page-by-page -->
+                            </div>
+                        </div>
+
+                        <!-- Page Flip Pagination Controls bar -->
+                        <div class="flex items-center justify-between max-w-[800px] w-full mx-auto bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-xs shadow-sm">
+                            <button id="btn-prev-page" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg font-bold flex items-center gap-1 transition-colors">
+                                <i data-lucide="chevron-left" class="w-4 h-4"></i> Prev Page
+                            </button>
+                            <span id="txt-page-indicator" class="font-bold text-slate-600 dark:text-slate-400 font-mono">Page 1 of 1</span>
+                            <button id="btn-next-page" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg font-bold flex items-center gap-1 transition-colors">
+                                Next Page <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -475,9 +530,9 @@
         </section>
 
         <!-- RIGHT PANEL: AI Legal Grounded Chatbot Assistant -->
-        <section id="chat-panel" class="w-full md:w-80 lg:w-96 bg-slate-50 dark:bg-slate-900 border-t md:border-t-0 md:border-l border-slate-200 dark:border-slate-800 flex flex-col shrink-0 overflow-hidden z-10">
+        <section id="chat-panel" class="w-full md:w-80 lg:w-96 bg-slate-50 dark:bg-slate-900 border-t md:border-t-0 md:border-l border-slate-200 dark:border-slate-800 flex flex-col shrink-0 overflow-hidden z-10 transition-all duration-300">
             <!-- Chat Head Title -->
-            <div class="bg-navy-800 dark:bg-slate-950 text-white p-3 flex items-center justify-between shrink-0 shadow-sm">
+            <div class="bg-navy-850 dark:bg-slate-950 text-white p-3 flex items-center justify-between shrink-0 shadow-sm border-b border-slate-800">
                 <div class="flex items-center gap-2">
                     <div class="relative">
                         <i data-lucide="message-square" class="w-4 h-4 text-red-400"></i>
@@ -492,7 +547,7 @@
 
             <!-- Grounded Banner Header Info -->
             <div class="bg-navy-900/10 dark:bg-slate-950/40 border-b border-slate-200 dark:border-slate-800 px-4 py-2 text-[10px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between shrink-0">
-                <span class="truncate pr-4" id="chat-grounding-status">No Contract Grounding context loaded.</span>
+                <span class="truncate pr-4 animate-pulse" id="chat-grounding-status">No Contract Grounding context loaded.</span>
                 <i data-lucide="link" class="w-3 h-3 text-slate-400 shrink-0"></i>
             </div>
 
@@ -513,7 +568,7 @@
             </div>
 
             <!-- Message Composer Box -->
-            <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
+            <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0" id="tour-chat-zone">
                 <div class="flex gap-2">
                     <textarea id="chat-input-field" rows="1" placeholder="Type a compliance query..." class="flex-1 border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-lg p-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-red-500 resize-none max-h-24 leading-relaxed"></textarea>
                     <button id="btn-chat-send" class="bg-red-700 hover:bg-red-800 text-white rounded-lg p-2 flex items-center justify-center transition-colors shadow-xs aspect-square shrink-0">
@@ -562,7 +617,7 @@
                 noDocs: "No documents uploaded",
                 noDocsDesc: "Provide your API key and import sample files or custom PDFs to begin risk assessment.",
                 tabDashboard: "Compliance Risk Deck",
-                tabViewer: "Extracted Document Text",
+                tabViewer: "Document Page Preview",
                 tabCompare: "Cross-Comparison Matrix",
                 exportButton: "Export Summary",
                 dashEmpty: "Ready for Compliance Check",
@@ -577,13 +632,13 @@
                 lblMissing: "Missing Protective Terms",
                 lblRisks: "Flagged Risk Allocations & Warnings",
                 disclaimer: "This is informational only, not legal advice. Consult a lawyer for binding decisions.",
-                lblViewerTitle: "Interactive Markup Explorer",
+                lblViewerTitle: "Interactive Markup Explorer (Paginated PDF Preview)",
                 viewerEmpty: "Choose a document from the left list to explore parsed context.",
                 compareAlertTitle: "Evaluating Multi-Contract Commonalities",
                 compareAlertDesc: "Select at least two documents in the document manager sidebar, then click 'Generate Comparison Matrix' to feed them to Gemini for parallel parsing.",
                 compareAction: "Generate Comparison Matrix",
                 aiProcessing: "ClauseLLM is auditing compliance levels...",
-                aiProcessingDesc: "Sending extracted tokens to Gemini 3.0 Sandbox. Please do not close this dashboard tab.",
+                aiProcessingDesc: "Sending extracted tokens to Gemini. Please do not close this dashboard tab.",
                 cancel: "Cancel",
                 chatTitle: "Contract Assistant",
                 chatWelcome: "Hello! I am ClauseLLM, your embedded compliance auditor. Select any uploaded contract and ask me to explain specific terms, outline severe commitments, or simplify complex legalese.",
@@ -611,7 +666,7 @@
                 noDocs: "لا توجد مستندات مرفوعة حالياً",
                 noDocsDesc: "يرجى توفير مفتاح واجهة برمجة تطبيقات Gemini واستيراد عينات من الملفات أو عقود مخصصة لبدء تقييم المخاطر.",
                 tabDashboard: "لوحة مخاطر الامتثال",
-                tabViewer: "النص المستخرج للمستند",
+                tabViewer: "معاينة صفحات المستند",
                 tabCompare: "مصفوفة المقارنة المتبادلة",
                 exportButton: "تصدير الملخص",
                 dashEmpty: "جاهز لتدقيق الامتثال",
@@ -626,7 +681,7 @@
                 lblMissing: "شروط الحماية المفقودة بالمسودة",
                 lblRisks: "البنود والمخاطر التي تم تحديدها والتحذير منها",
                 disclaimer: "هذه المعلومات لأغراض إرشادية وتوضيحية فقط، ولا تعد استشارة قانونية ملزمة. يرجى مراجعة محامٍ مختص لاتخاذ القرارات النهائية.",
-                lblViewerTitle: "مستكشف النصوص التفاعلي",
+                lblViewerTitle: "مستكشف النصوص التفاعلي (معاينة صفحات الـ PDF)",
                 viewerEmpty: "اختر مستنداً من القائمة الجانبية لاستكشاف محتواه المفصل.",
                 compareAlertTitle: "تقييم القواسم المشتركة بين مستندات متعددة",
                 compareAlertDesc: "يرجى تفعيل وضع المقارنة وتحديد مستندين على الأقل من القائمة الجانبية، ثم الضغط على زر توليد مصفوفة المقارنة لإرسالهم لـ Gemini.",
@@ -659,7 +714,7 @@
                 noDocs: "कोई दस्तावेज़ अपलोड नहीं हुआ",
                 noDocsDesc: "जोखिम मूल्यांकन शुरू करने के लिए अपनी Gemini API कुंजी प्रदान करें और नमूना फ़ाइलें या कस्टम PDF आयात करें।",
                 tabDashboard: "अनुपालन जोखिम डेक",
-                tabViewer: "निष्कर्षित पाठ",
+                tabViewer: "दस्तावेज़ पृष्ठ पूर्वावलोकन",
                 tabCompare: "क्रॉस-तुलना मैट्रिक्स",
                 exportButton: "सारांश निर्यात करें",
                 dashEmpty: "अनुपालन जांच के लिए तैयार",
@@ -674,7 +729,7 @@
                 lblMissing: "लापता सुरक्षात्मक शर्तें",
                 lblRisks: "चिह्नित जोखिम और चेतावनियाँ",
                 disclaimer: "यह केवल सूचनात्मक है, कानूनी सलाह नहीं है। बाध्यकारी निर्णयों के लिए किसी वकील से परामर्श लें।",
-                lblViewerTitle: "इंटरैक्टिव मार्कअप एक्सप्लोरर",
+                lblViewerTitle: "इंटरैक्टिव मार्कअप एक्सप्लोरर (दस्तावेज़ पूर्वावलोकन)",
                 viewerEmpty: "पाठ का पता लगाने के लिए बाईं सूची से एक दस्तावेज़ चुनें।",
                 compareAlertTitle: "बहु-अनुबंध समानताओं का मूल्यांकन",
                 compareAlertDesc: "तुलना तालिका बनाने के लिए साइडबार में कम से कम दो दस्तावेज़ चुनें, फिर जनरेट बटन पर क्लिक करें।",
@@ -699,7 +754,7 @@
                 rtl: true,
                 appTitle: "کلاوز ایل ایل ایم",
                 appBadge: "v2.5 can",
-                appSubtitle: "مصنوعی ذہانت پر مبنی قانونی دستاویزات کا تجزیہ کار اور آڈٹ سسٹم",
+                appSubtitle: "مصنوعي ذہانت پر مبنی قانونی दस्तावेजات کا تجزیہ کار اور آڈٹ سسٹم",
                 compareLabel: "موازنہ موڈ",
                 rememberLabel: "یاد رکھیں",
                 uploadTitle: "معاہدہ اپ لوڈ کریں",
@@ -708,27 +763,27 @@
                 noDocs: "کوئی دستاویز اپ لوڈ نہیں کی گئی",
                 noDocsDesc: "تجزیہ شروع کرنے کے لیے جیمنی اے پی آئی کی فراہم کریں اور نمونہ فائل یا کسٹم پی ڈی ایف اپ لوڈ کریں۔",
                 tabDashboard: "تعمیل و خطرات کارڈز",
-                tabViewer: "حاصل کردہ تحریر",
+                tabViewer: "معاہدہ صفحہ معائنہ",
                 tabCompare: "تقابلی موازنہ شیٹ",
                 exportButton: "خلاصہ ڈاؤن لوڈ کریں",
                 dashEmpty: "تجزیہ کے لیے تیار ہے",
-                dashEmptyDesc: "بائیں پینل سے کسی دستاویز کا انتخاب کریں، اے پی آئی کی داخل کریں اور آڈٹ شروع کرنے کے لیے بٹن دبائیں۔",
+                dashEmptyDesc: "بائیں پینل से کسی دستاویز کا انتخاب کریں، اے پی آئی کی داخل کریں اور آڈٹ شروع کرنے کے لیے بٹن دبائیں۔",
                 auditBtn: "معاہدے کا آڈٹ شروع کریں",
                 lblProfile: "معاہدے کی تفصیل",
                 lblDuration: "مدت:",
-                lblTerms: "بنیادی شرائط و فریقین",
+                lblTerms: "بنیادی شرائط व فریقین",
                 lblParties: "فریقین:",
-                lblEffective: "آغاز کی تاریخ:",
-                lblPayment: "ادائیگی کی شرائط:",
+                lblEffective: "آغاز की تاریخ:",
+                lblPayment: "ادائیگی की شرائط:",
                 lblMissing: "لاپتہ حفاظتی دفعات",
                 lblRisks: "نشان زدہ خطرات و تنبیہات",
                 disclaimer: "یہ معلومات صرف معلومات کی فراہمی کے لیے ہیں، قانونی مشاورت نہیں۔ حتمی فیصلوں کے لیے اپنے وکیل سے رجوع کریں۔",
-                lblViewerTitle: "تحریری جائزہ پینل",
+                lblViewerTitle: "تحریری جائزہ پینل (پی ڈی ایف صفحات معائنہ)",
                 viewerEmpty: "دستاویز کا مواد دیکھنے کے لیے بائیں پینل سے انتخاب کریں۔",
                 compareAlertTitle: "ملٹی معاہدہ جات کا موازنہ",
                 compareAlertDesc: "کم از کم دو معاہدے منتخب کریں اور موازنہ چارٹ حاصل کرنے کے لیے بٹن پر کلک کریں۔",
                 compareAction: "موازنہ شیٹ تیار کریں",
-                aiProcessing: "کلاوز ایل ایل ایم تعمیل کا جائزہ لے رہا ہے...",
+                aiProcessing: "معاہدے کی تعمیل کا جائزہ جاری ہے...",
                 aiProcessingDesc: "ڈیٹا جیمنی کو بھیجا جا رہا ہے۔ براہ کرم یہ ونڈو بند نہ کریں۔",
                 cancel: "منسوخ کریں",
                 chatTitle: "معاون چیٹ بوٹ",
@@ -741,7 +796,7 @@
                 toastErrorLoad: "پی ڈی ایف پڑھنے میں ناکامی۔",
                 toastSelectDoc: "براہ کرم پہلے کوئی معاہدہ منتخب کریں۔",
                 toastNoKey: "اے پی آئی کی موجود نہیں۔ ڈیمو سیشن شروع کیا جا رہا ہے۔",
-                toastSelectMultiple: "موازنے کے لیے کم از کم دو دستاویزات منتخب کریں۔",
+                toastSelectMultiple: "موازنے کے لیے کم از कम दो دستاویزات منتخب کریں۔",
                 suggestedLawyerQuery: "اپنے وکیل سے پوچھنے کے لیے مجوزہ سوال:"
             },
             fr: {
@@ -756,7 +811,7 @@
                 noDocs: "Aucun document téléchargé",
                 noDocsDesc: "Fournissez votre clé API Gemini et importez des exemples de fichiers ou des PDF personnalisés pour démarrer l'évaluation des risques.",
                 tabDashboard: "Tableau des risques",
-                tabViewer: "Texte brut extrait",
+                tabViewer: "Aperçu de la page du document",
                 tabCompare: "Matrice de comparaison",
                 exportButton: "Exporter le résumé",
                 dashEmpty: "Prêt pour l'audit de conformité",
@@ -771,7 +826,7 @@
                 lblMissing: "Clauses protectrices manquantes",
                 lblRisks: "Clauses à risque signalées",
                 disclaimer: "Ceci est informatif, non un conseil juridique. Consultez un avocat pour toute décision exécutoire.",
-                lblViewerTitle: "Explorateur de balisage interactif",
+                lblViewerTitle: "Explorateur de balisage (Aperçu de la page PDF)",
                 viewerEmpty: "Choisissez un document pour explorer sa structure de texte brut.",
                 compareAlertTitle: "Évaluation de la conformité multi-contrats",
                 compareAlertDesc: "Sélectionnez au moins deux documents dans le volet de gauche, puis cliquez sur générer pour compiler le tableau comparatif.",
@@ -804,7 +859,7 @@
                 noDocs: "No hay documentos cargados",
                 noDocsDesc: "Proporcione su clave API de Gemini e importe archivos de prueba o PDFs personalizados para comenzar la auditoría de riesgos.",
                 tabDashboard: "Panel de Riesgo",
-                tabViewer: "Texto de contrato extraído",
+                tabViewer: "Vista previa del documento",
                 tabCompare: "Matriz Comparativa",
                 exportButton: "Exportar Resumen",
                 dashEmpty: "Listo para auditoría de cumplimiento",
@@ -819,7 +874,7 @@
                 lblMissing: "Cláusulas de protección faltantes",
                 lblRisks: "Cláusulas de riesgo señaladas",
                 disclaimer: "Esto es meramente informativo, no es asesoramiento legal. Consulte a un abogado para decisiones vinculantes.",
-                lblViewerTitle: "Explorador de marcas interactivo",
+                lblViewerTitle: "Explorateur interactivo (Vista de página PDF)",
                 viewerEmpty: "Elija un documento del panel izquierdo para explorar el contenido del texto.",
                 compareAlertTitle: "Evaluación de cumplimiento multicontrato",
                 compareAlertDesc: "Seleccione al menos dos documentos en la barra lateral izquierda, luego haga clic para generar la matriz comparativa.",
@@ -829,7 +884,7 @@
                 cancel: "Cancelar",
                 chatTitle: "Asistente de Contratos",
                 chatWelcome: "¡Hola! Soy ClauseLLM. Seleccione cualquier contrato y pídame que le explique términos específicos o resuma obligaciones complejas.",
-                chatCaps: "Las consultas de chat siempre se basan en el texto del documento seleccionado",
+                chatCaps: "Las consultas de chat siempre se basan en el texte del documento seleccionado",
                 apiKeyPlaceholder: "Clave API de Gemini...",
                 toastSavedKey: "Clave API guardada localmente con seguridad.",
                 toastClearedKey: "Clave API eliminada de la memoria.",
@@ -852,36 +907,46 @@
             chatHistory: {}, // Key: docId, Value: Array of { role, parts }
             compareMode: false,
             apiAbortController: null,
-            isDark: true // Default to premium dark theme
+            isDark: true, // Default to dark theme
+            activeViewerPageIdx: 0, // Current active parsed page for preview
+            onboardingStep: 1 // Onboarding Tour Step track
         };
 
         // MOCK DATA FOR SANDBOX PLAYBACK
-        const mockNDAText = `NON-DISCLOSURE AGREEMENT (NDA)
+        const mockNDAText = `--- Page 1 ---
+NON-DISCLOSURE AGREEMENT (NDA)
 This Non-Disclosure Agreement (the "Agreement") is entered into this 14th day of May, 2026 (the "Effective Date"), by and between Stark Industries Inc. ("Disclosing Party") and Wayne Enterprises Corp ("Receiving Party").
 
 1. PURPOSE & SCOPE
 Wayne Enterprises wishes to evaluate a potential business combination. In connection with this evaluation, Stark Industries may disclose proprietary technical engineering details regarding Arc Reactor stabilization (the "Confidential Information").
 
+--- Page 2 ---
 2. STRICT EXCLUSIVITY AND RESTRICTION
 The Receiving Party shall maintain confidentiality for a period of ten (10) years from disclosure. Additionally, Receiving Party agrees that it will not, for a period of three (3) years, engage in any development of competitive energy modules. 
+
 WARNING: Any breach shall incur automatic liquidated damages of $50,000,000 payable within 48 hours, without requiring proof of actual harm.
 
+--- Page 3 ---
 3. GOVERNING LAW & JURISDICTION
 This agreement shall be governed, interpreted, and governed under the exclusive jurisdiction of the courts of Latveria, waving any claim to local convenience.
 
 4. INJUNCTIVE RELIEF
 Because remedies at law may be inadequate, Disclosing Party is entitled to seek immediate injunctive relief without the necessity of posting any bond or proving special damages.`;
 
-        const mockLeaseText = `RESIDENTIAL LEASE AGREEMENT
+        const mockLeaseText = `--- Page 1 ---
+RESIDENTIAL LEASE AGREEMENT
 This Residential Lease Agreement (the "Lease") is executed on January 1, 2026, by Apex Property Management Ltd ("Landlord") and John Doe ("Tenant").
 
 1. PREMISES & LEASE TERM
 The landlord leases the premises located at Apt 4B, 742 Evergreen Terrace to the Tenant for a fixed duration of twelve (12) months starting February 1, 2026.
 
+--- Page 2 ---
 2. PAYMENT OF RENT & PENALTIES
 Rent is due in advance on the 1st of each calendar month at the rate of $2,800 USD. If payment is received after the 2nd day, an immediate late fee of $450 shall apply, followed by a compounded $100 per day rate penalty.
+
 The landlord reserves the absolute right to terminate this lease and confiscate all personal property inside the apartment immediately upon any late rent payment without prior warning or legal eviction processes.
 
+--- Page 3 ---
 3. MAINTENANCE AND ALTERATIONS
 The Tenant shall keep the property in clean and sanitary conditions. Tenant must pay for all internal structural repairs out of pocket, regardless of whether the damage occurred by acts of God or structural failure.
 
@@ -1019,6 +1084,7 @@ This lease constitutes the entire agreement. No modifications are valid unless i
             dashboardDisclaimer: document.getElementById('dashboard-disclaimer'),
             viewerEmpty: document.getElementById('viewer-empty'),
             viewerContainer: document.getElementById('viewer-container'),
+            viewerCanvasOuter: document.getElementById('viewer-canvas-outer'),
             viewerWordCount: document.getElementById('viewer-word-count'),
             contentCompare: document.getElementById('content-compare'),
             compareMatrixWrapper: document.getElementById('compare-matrix-wrapper'),
@@ -1041,7 +1107,17 @@ This lease constitutes the entire agreement. No modifications are valid unless i
             chatPanel: document.getElementById('chat-panel'),
             btnToggleSidebar: document.getElementById('btn-toggle-sidebar'),
             btnToggleChat: document.getElementById('btn-toggle-chat'),
-            btnToggleChatMobile: document.getElementById('btn-toggle-chat-mobile')
+            btnToggleChatMobile: document.getElementById('btn-toggle-chat-mobile'),
+            btnPrevPage: document.getElementById('btn-prev-page'),
+            btnNextPage: document.getElementById('btn-next-page'),
+            pageIndicator: document.getElementById('txt-page-indicator'),
+            onboardingHud: document.getElementById('onboarding-hud'),
+            btnSkipTour: document.getElementById('btn-skip-tour'),
+            btnTourPrev: document.getElementById('btn-tour-prev'),
+            btnTourNext: document.getElementById('btn-tour-next'),
+            tourTitle: document.getElementById('tour-step-title'),
+            tourDesc: document.getElementById('tour-step-desc'),
+            tourIndicator: document.getElementById('tour-step-indicator')
         };
 
         // TOAST ENGINE
@@ -1084,7 +1160,6 @@ This lease constitutes the entire agreement. No modifications are valid unless i
 
         // INITIALIZATION
         function initApp() {
-            // Load key & Theme preference
             const savedKey = localStorage.getItem('clause_gemini_key');
             if (savedKey) {
                 appState.apiKey = savedKey;
@@ -1103,12 +1178,13 @@ This lease constitutes the entire agreement. No modifications are valid unless i
             bindEvents();
             // Load translation i18n
             updateUILanguage();
+            // Start Onboarding Highlights
+            triggerOnboardingStep(1);
             // Refresh lucide icons
             lucide.createIcons();
         }
 
         function bindEvents() {
-            // Theme toggle listener
             dom.themeToggle.addEventListener('click', () => {
                 appState.isDark = !appState.isDark;
                 applyTheme();
@@ -1117,7 +1193,6 @@ This lease constitutes the entire agreement. No modifications are valid unless i
                 }
             });
 
-            // Workspace Collapse togglers
             dom.btnToggleSidebar.addEventListener('click', () => {
                 dom.sidebarPanel.classList.toggle('collapsed-panel');
             });
@@ -1128,19 +1203,16 @@ This lease constitutes the entire agreement. No modifications are valid unless i
                 setActiveMobilePane('assistant');
             });
 
-            // Language Select Change
             dom.langSelector.addEventListener('change', (e) => {
                 appState.currentLang = e.target.value;
                 updateUILanguage();
             });
 
-            // Compare Mode Toggle
             dom.compareModeToggle.addEventListener('change', (e) => {
                 appState.compareMode = e.target.checked;
                 toggleCompareModeUI();
             });
 
-            // API Key Inputs
             dom.apiKeyInput.addEventListener('input', (e) => {
                 appState.apiKey = e.target.value;
                 if (appState.rememberKey) {
@@ -1169,7 +1241,6 @@ This lease constitutes the entire agreement. No modifications are valid unless i
                 }
             });
 
-            // Drag and Drop Zone Events
             dom.dropzone.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 dom.dropzone.classList.add('border-red-600', 'bg-slate-800');
@@ -1194,20 +1265,27 @@ This lease constitutes the entire agreement. No modifications are valid unless i
                 if (e.target.files.length > 0) handleFiles(e.target.files);
             });
 
-            // Tabs Controls
             dom.tabDashboard.addEventListener('click', () => switchTab('dashboard'));
-            dom.tabViewer.addEventListener('click', () => switchTab('viewer'));
+            dom.tabViewer.addEventListener('click', () => {
+                switchTab('viewer');
+                if (appState.onboardingStep === 3) {
+                    triggerOnboardingStep(4);
+                }
+            });
             dom.tabCompare.addEventListener('click', () => switchTab('compare'));
 
-            // Sandbox Predefined Loaders
-            dom.btnDemo1.addEventListener('click', () => loadSandboxDocument("Sample Stark NDA.pdf", mockNDAText, mockAnalysisNDA));
-            dom.btnDemo2.addEventListener('click', () => loadSandboxDocument("Sample Apex Lease.pdf", mockLeaseText, mockAnalysisLease));
+            dom.btnDemo1.addEventListener('click', () => {
+                loadSandboxDocument("Sample Stark NDA.pdf", mockNDAText, mockAnalysisNDA);
+            });
+            dom.btnDemo2.addEventListener('click', () => {
+                loadSandboxDocument("Sample Apex Lease.pdf", mockLeaseText, mockAnalysisLease);
+            });
 
-            // Audit trigger
-            dom.btnTriggerAudit.addEventListener('click', () => triggerAuditRequest());
+            dom.btnTriggerAudit.addEventListener('click', () => {
+                triggerAuditRequest();
+            });
             dom.btnTriggerCompare.addEventListener('click', () => triggerComparisonRequest());
 
-            // Cancel API Request
             dom.btnCancelApiRequest.addEventListener('click', () => {
                 if (appState.apiAbortController) {
                     appState.apiAbortController.abort();
@@ -1216,11 +1294,12 @@ This lease constitutes the entire agreement. No modifications are valid unless i
                 }
             });
 
-            // Export Actions
             dom.exportBtn.addEventListener('click', () => triggerDocumentExport());
 
             // Grounded Chat events
-            dom.btnChatSend.addEventListener('click', () => handleChatSubmission());
+            dom.btnChatSend.addEventListener('click', () => {
+                handleChatSubmission();
+            });
             dom.chatInputField.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
@@ -1234,9 +1313,128 @@ This lease constitutes the entire agreement. No modifications are valid unless i
                     showToast("Chat context thread purged.", "info");
                 }
             });
+
+            // Pagination Controls
+            dom.btnPrevPage.addEventListener('click', () => {
+                if (appState.activeViewerPageIdx > 0) {
+                    appState.activeViewerPageIdx--;
+                    renderPaginatedPage();
+                }
+            });
+            dom.btnNextPage.addEventListener('click', () => {
+                const doc = appState.documents.find(d => d.id === appState.activeDocId);
+                if (doc) {
+                    const pages = splitDocToPages(doc.text);
+                    if (appState.activeViewerPageIdx < pages.length - 1) {
+                        appState.activeViewerPageIdx++;
+                        renderPaginatedPage();
+                    }
+                }
+            });
+
+            // Onboarding Tour Buttons
+            dom.btnSkipTour.addEventListener('click', () => {
+                dom.onboardingHud.classList.add('hidden');
+                clearOnboardingHighlights();
+            });
+            dom.btnTourPrev.addEventListener('click', () => {
+                if (appState.onboardingStep > 1) {
+                    triggerOnboardingStep(appState.onboardingStep - 1);
+                }
+            });
+            dom.btnTourNext.addEventListener('click', () => {
+                if (appState.onboardingStep < 5) {
+                    if (appState.onboardingStep === 3) {
+                        // Switching to tab viewer dynamically on step transition
+                        switchTab('viewer');
+                        triggerOnboardingStep(4);
+                    } else {
+                        triggerOnboardingStep(appState.onboardingStep + 1);
+                    }
+                } else {
+                    triggerOnboardingStep(6); // Conclude Tour
+                }
+            });
         }
 
-        // APPLY DARK/LIGHT THEME CLASSES
+        // ONBOARDING ENGINE
+        function triggerOnboardingStep(stepIdx) {
+            appState.onboardingStep = stepIdx;
+            clearOnboardingHighlights();
+
+            if (stepIdx === 6) {
+                dom.onboardingHud.classList.add('hidden');
+                showToast("You've completed the walk-through! Audit away.", "success");
+                return;
+            }
+
+            dom.onboardingHud.classList.remove('hidden');
+
+            if (stepIdx === 1) {
+                dom.tourTitle.textContent = "Step 1: Load Contract";
+                dom.tourDesc.innerHTML = "To begin, load a document draft. Click either <strong class='text-amber-600 dark:text-amber-400'>'Sample NDA'</strong> or <strong class='text-amber-600 dark:text-amber-400'>'Sample Lease'</strong> to load template data, or drag your own custom PDF into the upload zone above.";
+                dom.tourIndicator.innerHTML = "◉ ○ ○ ○ ○ <span class='ml-1 text-[9px]'>(1 of 5)</span>";
+                dom.btnTourPrev.classList.add('hidden');
+                dom.btnTourNext.textContent = "Next Step";
+                
+                dom.btnDemo1.classList.add('onboard-highlight');
+                dom.btnDemo2.classList.add('onboard-highlight');
+                dom.dropzone.classList.add('onboard-highlight');
+            } else if (stepIdx === 2) {
+                dom.tourTitle.textContent = "Step 2: Start Audit";
+                dom.tourDesc.innerHTML = "Your contract text has been successfully loaded into the active pool! Now click <strong class='text-amber-600 dark:text-amber-400'>'Trigger Contract Compliance Audit'</strong> to parse compliance and extract risk tags.";
+                dom.tourIndicator.innerHTML = "○ ◉ ○ ○ ○ <span class='ml-1 text-[9px]'>(2 of 5)</span>";
+                dom.btnTourPrev.classList.remove('hidden');
+                dom.btnTourNext.textContent = "Next Step";
+
+                dom.btnTriggerAudit.classList.add('onboard-highlight');
+            } else if (stepIdx === 3) {
+                dom.tourTitle.textContent = "Step 3: Analyze Risks";
+                dom.tourDesc.innerHTML = "Compliance checks compiled! Color-coded cards denote risk factors. Click on any card below to read the exact quotation and view suggested plain-language lawyer check-list questions.";
+                dom.tourIndicator.innerHTML = "○ ○ ◉ ○ ○ <span class='ml-1 text-[9px]'>(3 of 5)</span>";
+                dom.btnTourPrev.classList.remove('hidden');
+                dom.btnTourNext.textContent = "Next Step";
+
+                dom.tabDashboard.classList.add('onboard-highlight');
+                if (dom.riskCardsContainer.children.length > 0) {
+                    dom.riskCardsContainer.children[0].classList.add('onboard-highlight');
+                }
+            } else if (stepIdx === 4) {
+                dom.tourTitle.textContent = "Step 4: Interactive Markup";
+                dom.tourDesc.innerHTML = "Observe where these warning flags live inside the physical draft agreement! Explore this simulated A4 view with inline highlighted markers. Use page indicators at the bottom to flip sections.";
+                dom.tourIndicator.innerHTML = "○ ○ ○ ◉ ○ <span class='ml-1 text-[9px]'>(4 of 5)</span>";
+                dom.btnTourPrev.classList.remove('hidden');
+                dom.btnTourNext.textContent = "Next Step";
+
+                dom.tabViewer.classList.add('onboard-highlight');
+                dom.viewerContainer.classList.add('onboard-highlight');
+            } else if (stepIdx === 5) {
+                dom.tourTitle.textContent = "Step 5: Grounded Chat";
+                dom.tourDesc.innerHTML = "Have granular questions regarding liability limits, dates, or payment details? Type queries in the assistant's composer to fetch responses strictly grounded in the document text.";
+                dom.tourIndicator.innerHTML = "○ ○ ○ ○ ◉ <span class='ml-1 text-[9px]'>(5 of 5)</span>";
+                dom.btnTourPrev.classList.remove('hidden');
+                dom.btnTourNext.textContent = "Finish";
+
+                dom.chatPanel.classList.add('onboard-highlight');
+                dom.chatInputField.classList.add('onboard-highlight');
+            }
+
+            lucide.createIcons();
+        }
+
+        function clearOnboardingHighlights() {
+            dom.btnDemo1.classList.remove('onboard-highlight');
+            dom.btnDemo2.classList.remove('onboard-highlight');
+            dom.dropzone.classList.remove('onboard-highlight');
+            dom.btnTriggerAudit.classList.remove('onboard-highlight');
+            dom.tabDashboard.classList.remove('onboard-highlight');
+            dom.tabViewer.classList.remove('onboard-highlight');
+            dom.viewerContainer.classList.remove('onboard-highlight');
+            dom.chatPanel.classList.remove('onboard-highlight');
+            dom.chatInputField.classList.remove('onboard-highlight');
+            Array.from(dom.riskCardsContainer.children).forEach(c => c.classList.remove('onboard-highlight'));
+        }
+
         function applyTheme() {
             if (appState.isDark) {
                 document.documentElement.classList.add('dark');
@@ -1245,7 +1443,6 @@ This lease constitutes the entire agreement. No modifications are valid unless i
             }
         }
 
-        // GET TRANSLATION HELPERS
         function t(key) {
             return i18n[appState.currentLang][key] || i18n['en'][key];
         }
@@ -1254,7 +1451,6 @@ This lease constitutes the entire agreement. No modifications are valid unless i
             const dictionary = i18n[appState.currentLang];
             const isRTL = dictionary.rtl === true;
 
-            // Apply RTL / LTR layout attributes
             if (isRTL) {
                 document.documentElement.dir = "rtl";
                 document.documentElement.classList.add('rtl-mode');
@@ -1263,7 +1459,6 @@ This lease constitutes the entire agreement. No modifications are valid unless i
                 document.documentElement.classList.remove('rtl-mode');
             }
 
-            // UI Elements Text Translation mappings
             document.getElementById('txt-app-title').textContent = t('appTitle');
             document.getElementById('txt-app-badge').textContent = t('appBadge');
             document.getElementById('txt-app-subtitle').textContent = t('appSubtitle');
@@ -1274,18 +1469,15 @@ This lease constitutes the entire agreement. No modifications are valid unless i
             document.getElementById('txt-doc-header').textContent = t('docHeader');
             dom.apiKeyInput.placeholder = t('apiKeyPlaceholder');
             
-            // Tab names
             document.getElementById('txt-tab-dashboard').textContent = t('tabDashboard');
             document.getElementById('txt-tab-viewer').textContent = t('tabViewer');
             document.getElementById('txt-tab-compare').textContent = t('tabCompare');
             
-            // Button headers
             document.getElementById('txt-export-button').textContent = t('exportButton');
             document.getElementById('txt-dash-empty').textContent = t('dashEmpty');
             document.getElementById('txt-dash-empty-desc').textContent = t('dashEmptyDesc');
             document.getElementById('txt-audit-btn').textContent = t('auditBtn');
             
-            // Key metrics
             document.getElementById('txt-lbl-profile').textContent = t('lblProfile');
             document.getElementById('txt-lbl-duration').textContent = t('lblDuration');
             document.getElementById('txt-lbl-terms').textContent = t('lblTerms');
@@ -1295,7 +1487,6 @@ This lease constitutes the entire agreement. No modifications are valid unless i
             document.getElementById('txt-lbl-missing').textContent = t('lblMissing');
             document.getElementById('txt-lbl-risks').textContent = t('lblRisks');
             
-            // Chat & viewers
             document.getElementById('txt-lbl-viewer-title').textContent = t('lblViewerTitle');
             document.getElementById('txt-viewer-empty').textContent = t('viewerEmpty');
             document.getElementById('txt-compare-alert-title').textContent = t('compareAlertTitle');
@@ -1308,13 +1499,11 @@ This lease constitutes the entire agreement. No modifications are valid unless i
             document.getElementById('txt-chat-caps').textContent = t('chatCaps');
             document.getElementById('txt-chat-welcome').textContent = t('chatWelcome');
             
-            // Dynamic check on Empty Lists
             if (appState.documents.length === 0) {
                 document.getElementById('txt-no-docs').textContent = t('noDocs');
                 document.getElementById('txt-no-docs-desc').textContent = t('noDocsDesc');
             }
 
-            // Update Dynamic renders
             if (appState.activeDocId) {
                 renderRiskDashboard();
             }
@@ -1437,9 +1626,25 @@ This lease constitutes the entire agreement. No modifications are valid unless i
             renderDocumentList();
             setActiveDocument(docId);
             showToast("Sandbox document injected with mock compliance results.", "success");
+
+            // Event-driven onboarding triggers: Auto advance to Step 2
+            if (appState.onboardingStep === 1) {
+                triggerOnboardingStep(2);
+            }
         }
 
-        // RENDER DOCUMENT LISTS IN SIDEBAR
+        // PAGINATION & SLICING FUNCTIONS
+        function splitDocToPages(text) {
+            if (!text) return [];
+            // Split by standard page marker
+            const pageMarkerRegex = /--- Page \d+ ---/gi;
+            const pagesRaw = text.split(pageMarkerRegex);
+            
+            // Clean up empty index items
+            const cleaned = pagesRaw.map(p => p.trim()).filter(p => p !== "");
+            return cleaned.length > 0 ? cleaned : [text];
+        }
+
         function renderDocumentList() {
             if (appState.documents.length === 0) {
                 dom.docEmptyState.classList.remove('hidden');
@@ -1454,7 +1659,7 @@ This lease constitutes the entire agreement. No modifications are valid unless i
             dom.documentListContainer.innerHTML = appState.documents.map(doc => {
                 const isActive = doc.id === appState.activeDocId;
                 const activeClasses = isActive 
-                    ? 'bg-slate-800 dark:bg-slate-800 border-red-700/80 text-white' 
+                    ? 'bg-slate-800 dark:bg-slate-800 border-red-700/80 text-white shadow-md scale-[1.01]' 
                     : 'bg-slate-900 dark:bg-slate-950/40 border-slate-800 dark:border-slate-900 text-slate-300 hover:bg-slate-800/40';
                 
                 return `
@@ -1513,7 +1718,7 @@ This lease constitutes the entire agreement. No modifications are valid unless i
         function resetViewerDashboardEmptyStates() {
             dom.dashboardPayload.classList.add('hidden');
             dom.dashboardEmpty.classList.remove('hidden');
-            dom.viewerContainer.classList.add('hidden');
+            dom.viewerCanvasOuter.classList.add('hidden');
             dom.viewerEmpty.classList.remove('hidden');
             dom.chatGroundingStatus.textContent = "No Contract Grounding context loaded.";
             dom.chatTokensIndicator.textContent = "Context size: 0 ch";
@@ -1522,6 +1727,7 @@ This lease constitutes the entire agreement. No modifications are valid unless i
         // SWAP ACTIVE DOCUMENT STATE AND FOCUS IN TABS
         function setActiveDocument(docId) {
             appState.activeDocId = docId;
+            appState.activeViewerPageIdx = 0; // Reset page on swap
             renderDocumentList();
 
             const doc = appState.documents.find(d => d.id === docId);
@@ -1532,11 +1738,11 @@ This lease constitutes the entire agreement. No modifications are valid unless i
 
             if (doc.text) {
                 dom.viewerEmpty.classList.add('hidden');
-                dom.viewerContainer.classList.remove('hidden');
+                dom.viewerCanvasOuter.classList.remove('hidden');
                 dom.viewerWordCount.textContent = `${doc.text.split(/\s+/).length} words`;
-                renderRawViewerWithHighlights(doc);
+                renderPaginatedPage();
             } else {
-                dom.viewerContainer.classList.add('hidden');
+                dom.viewerCanvasOuter.classList.add('hidden');
                 dom.viewerEmpty.classList.remove('hidden');
             }
 
@@ -1554,7 +1760,6 @@ This lease constitutes the entire agreement. No modifications are valid unless i
 
         // RESPONSIVE PANE SELECTOR FOR MOBILE/TABLET
         function setActiveMobilePane(pane) {
-            // Remove active classes from navigation tabs
             document.getElementById('m-btn-pool').className = 'flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300';
             document.getElementById('m-btn-deck').className = 'flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300';
             document.getElementById('m-btn-assistant').className = 'flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300';
@@ -1590,6 +1795,7 @@ This lease constitutes the entire agreement. No modifications are valid unless i
             } else if (tabId === 'viewer') {
                 dom.tabViewer.className = "px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 border-b-2 border-red-700 bg-white dark:bg-slate-900 rounded-t-lg shadow-sm flex items-center gap-1.5";
                 document.getElementById('content-viewer').classList.remove('hidden');
+                renderPaginatedPage(); // Render whenever we enter preview
             } else if (tabId === 'compare') {
                 dom.tabCompare.className = "px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 border-b-2 border-red-700 bg-white dark:bg-slate-900 rounded-t-lg shadow-sm flex items-center gap-1.5";
                 dom.contentCompare.classList.remove('hidden');
@@ -1607,6 +1813,51 @@ This lease constitutes the entire agreement. No modifications are valid unless i
                     switchTab('dashboard');
                 }
             }
+        }
+
+        // PAGINATED MARKUP GENERATOR
+        function renderPaginatedPage() {
+            const doc = appState.documents.find(d => d.id === appState.activeDocId);
+            if (!doc) return;
+
+            const pages = splitDocToPages(doc.text);
+            const total = pages.length;
+            
+            if (appState.activeViewerPageIdx >= total) {
+                appState.activeViewerPageIdx = total - 1;
+            }
+            if (appState.activeViewerPageIdx < 0) {
+                appState.activeViewerPageIdx = 0;
+            }
+
+            dom.pageIndicator.textContent = `Page ${appState.activeViewerPageIdx + 1} of ${total}`;
+
+            // Sliced raw source text page
+            let rawPageText = pages[appState.activeViewerPageIdx] || "";
+            let highlightedText = escapeHTML(rawPageText);
+
+            if (doc.analysis && doc.analysis.risk_flags) {
+                doc.analysis.risk_flags.forEach(flag => {
+                    const phrase = flag.clause_excerpt.trim();
+                    if (!phrase || phrase.length < 5) return;
+
+                    const escapedPhrase = escapeHTML(phrase);
+                    
+                    let riskClass = "highlight-low";
+                    if (flag.risk_level === 'HIGH') riskClass = "highlight-high";
+                    else if (flag.risk_level === 'MEDIUM') riskClass = "highlight-medium";
+
+                    try {
+                        const escapedForRegex = escapedPhrase.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                        const re = new RegExp(`(${escapedForRegex})`, "gi");
+                        highlightedText = highlightedText.replace(re, `<mark class="${riskClass}">$1</mark>`);
+                    } catch (regexErr) {
+                        console.error("Highlight matching failure:", regexErr);
+                    }
+                });
+            }
+
+            dom.viewerContainer.innerHTML = highlightedText;
         }
 
         // RENDER RISK CARDS WITH COLOR-BLIND REINFORCEMENTS
@@ -1720,34 +1971,6 @@ This lease constitutes the entire agreement. No modifications are valid unless i
             }
         }
 
-        // RENDER INLINE HIGHLIGHT MARKUPS IN TEXT VIEW PANEL
-        function renderRawViewerWithHighlights(doc) {
-            let highlightedText = escapeHTML(doc.text);
-
-            if (doc.analysis && doc.analysis.risk_flags) {
-                doc.analysis.risk_flags.forEach(flag => {
-                    const phrase = flag.clause_excerpt.trim();
-                    if (!phrase || phrase.length < 5) return;
-
-                    const escapedPhrase = escapeHTML(phrase);
-                    
-                    let riskClass = "highlight-low";
-                    if (flag.risk_level === 'HIGH') riskClass = "highlight-high";
-                    else if (flag.risk_level === 'MEDIUM') riskClass = "highlight-medium";
-
-                    try {
-                        const escapedForRegex = escapedPhrase.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-                        const re = new RegExp(`(${escapedForRegex})`, "gi");
-                        highlightedText = highlightedText.replace(re, `<mark class="${riskClass}">$1</mark>`);
-                    } catch (regexErr) {
-                        console.error("Highlight rendering error:", regexErr);
-                    }
-                });
-            }
-
-            dom.viewerContainer.innerHTML = highlightedText;
-        }
-
         function escapeHTML(str) {
             return str
                 .replace(/&/g, "&amp;")
@@ -1779,6 +2002,11 @@ This lease constitutes the entire agreement. No modifications are valid unless i
                 doc.isProcessing = false;
                 renderDocumentList();
                 setActiveDocument(doc.id);
+                
+                // Event-driven onboarding triggers: Auto advance to Step 3
+                if (appState.onboardingStep === 2) {
+                    triggerOnboardingStep(3);
+                }
                 return;
             }
 
@@ -1864,6 +2092,11 @@ You must return data in this exact JSON structure:
                 showToast("Contract compliance audit finalized successfully!", "success");
                 renderDocumentList();
                 setActiveDocument(doc.id);
+                
+                // Event-driven onboarding triggers: Auto advance to Step 3
+                if (appState.onboardingStep === 2) {
+                    triggerOnboardingStep(3);
+                }
 
             } catch (err) {
                 if (err.name === 'AbortError') return;
@@ -2018,10 +2251,15 @@ Your response must be returned in this exact JSON structure:
                     const mockAns = `[SANDBOX SIMULATOR] Grounded in context of "${doc.name}": 
 Regarding your request: "${query}", Section 2 dictates that any late activities or disputes are strictly subjected to liabilities. Since we are operating in sandbox preview mode, provide your Gemini API key in the utility header to get a full grounded legal response.
 
-Remember: This is informational only and not legal counsel.`;
+Remember: This is informational only and not legal advice.`;
                     
                     appState.chatHistory[doc.id].push({ role: "model", parts: [{ text: mockAns }] });
                     renderChatLog();
+
+                    // Event-driven onboarding triggers: Auto Conclude on Step 5
+                    if (appState.onboardingStep === 5) {
+                        triggerOnboardingStep(6);
+                    }
                 }, 1000);
                 return;
             }
@@ -2087,6 +2325,11 @@ Rules:
                 });
 
                 renderChatLog();
+
+                // Event-driven onboarding triggers: Auto Conclude on Step 5
+                if (appState.onboardingStep === 5) {
+                    triggerOnboardingStep(6);
+                }
 
             } catch (err) {
                 console.error("Chat API Exception:", err);
@@ -2198,7 +2441,6 @@ Generated: ${new Date().toLocaleString()}
             }
         }
 
-        // Initialize script logic on window load
         window.onload = function() {
             initApp();
         };
