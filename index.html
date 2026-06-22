@@ -201,7 +201,7 @@
             </div>
 
             <!-- Compare Mode Toggle -->
-            <div id="container-compare-toggle" class="flex items-center gap-2 bg-slate-800 dark:bg-slate-900 border border-slate-700 dark:border-slate-800 rounded-lg px-3 py-1.5 animate-pulse">
+            <div id="container-compare-toggle" class="flex items-center gap-2 bg-slate-800 dark:bg-slate-900 border border-slate-700 dark:border-slate-800 rounded-lg px-3 py-1.5">
                 <label class="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" id="compare-mode-toggle" class="sr-only peer">
                     <div class="w-9 h-5 bg-slate-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-700"></div>
@@ -237,7 +237,8 @@
         <!-- LEFT PANEL: CONTRACTS POOL -->
         <section id="sidebar-panel" class="w-full md:w-72 lg:w-80 bg-slate-900 dark:bg-slate-950 border-r border-slate-800 dark:border-slate-900 flex flex-col shrink-0 text-slate-300 z-10">
             <div class="p-3 border-b border-slate-800 dark:border-slate-900">
-                <div id="dropzone" class="border-2 border-dashed border-slate-700 hover:border-red-600 rounded-xl p-4 text-center cursor-pointer transition-all bg-slate-800/40 hover:bg-slate-800/80 group">
+                <!-- drag & dropzone container reference from image_71f544.png -->
+                <div id="dropzone" class="border-2 border-dashed border-slate-700 hover:border-red-600 rounded-xl p-4 text-center cursor-pointer transition-all bg-slate-800/40 hover:bg-slate-800/85 group">
                     <input type="file" id="file-picker" multiple accept=".pdf" class="hidden">
                     <div class="flex flex-col items-center gap-1.5">
                         <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-red-500 transition-colors">
@@ -329,7 +330,7 @@
                         </div>
 
                         <div class="mt-6">
-                            <button id="btn-trigger-audit" class="bg-red-700 hover:bg-red-850 text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow-md inline-flex items-center gap-2 transition-all hover:scale-105 active:scale-95">
+                            <button id="btn-trigger-audit" class="bg-red-700 hover:bg-red-800 text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow-md inline-flex items-center gap-2 transition-all hover:scale-105 active:scale-95">
                                 <i data-lucide="shield-check" class="w-4 h-4"></i>
                                 <span id="txt-audit-btn">Trigger Advanced Audit</span>
                             </button>
@@ -369,7 +370,7 @@
                                 <div>
                                     <div class="flex items-center justify-between mb-2">
                                         <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase" id="txt-lbl-profile">Agreement Profile</span>
-                                        <span id="meta-doc-type" class="text-[10px] bg-slate-100 dark:bg-slate-900 text-slate-850 dark:text-slate-200 px-2 py-0.5 rounded-full font-bold border border-slate-200 dark:border-slate-700">Unidentified</span>
+                                        <span id="meta-doc-type" class="text-[10px] bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 px-2 py-0.5 rounded-full font-bold">Unidentified</span>
                                     </div>
                                     <h4 id="meta-doc-name" class="text-sm font-bold text-slate-800 dark:text-slate-100 line-clamp-2">Document Name</h4>
                                 </div>
@@ -397,11 +398,11 @@
                                 </div>
                             </div>
 
-                            <div class="bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/60 rounded-xl p-4 flex flex-col justify-between shadow-xs">
+                            <div class="bg-amber-50/55 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/60 rounded-xl p-4 flex flex-col justify-between shadow-xs">
                                 <div>
                                     <div class="flex items-center gap-1.5 text-amber-850 dark:text-amber-400 mb-2">
                                         <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600"></i>
-                                        <span class="text-[10px] font-bold tracking-widest uppercase text-amber-700 dark:text-amber-450" id="txt-lbl-missing">Missing Protective Terms</span>
+                                        <span class="text-[10px] font-bold tracking-widest uppercase text-amber-700 dark:text-amber-400" id="txt-lbl-missing">Missing Protective Terms</span>
                                     </div>
                                     <ul id="missing-clauses-list" class="text-xs space-y-1 text-slate-600 dark:text-slate-400 pl-4 list-disc rtl:pr-4 rtl:pl-0">
                                         <li>None detected</li>
@@ -478,7 +479,7 @@
                                 <p class="text-[11px] text-blue-700 dark:text-blue-400 mt-0.5" id="txt-compare-alert-desc">Select at least two documents in the document manager sidebar, then click "Generate Comparison Matrix".</p>
                             </div>
                         </div>
-                        <button id="btn-trigger-compare" class="bg-blue-800 hover:bg-blue-900 text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-1.5 transition-transform active:scale-95 mt-2 shadow-md">
+                        <button id="btn-trigger-compare" class="bg-blue-800 hover:bg-blue-900 text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-1.5 transition-transform active:scale-95 mt-2">
                             <i data-lucide="play" class="w-3.5 h-3.5"></i>
                             <span id="txt-compare-action">Generate Comparison Matrix</span>
                         </button>
@@ -524,7 +525,7 @@
             </div>
 
             <div class="bg-slate-100 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800/80 px-4 py-2 text-[10px] text-slate-600 dark:text-slate-400 font-medium flex items-center justify-between shrink-0">
-                <span class="truncate pr-4 animate-pulse" id="chat-grounding-status">No context loaded.</span>
+                <span class="truncate pr-4" id="chat-grounding-status">No context loaded.</span>
                 <i data-lucide="link" class="w-3 h-3 text-slate-400 shrink-0"></i>
             </div>
 
@@ -542,7 +543,7 @@
             <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0" id="chat-composer">
                 <div class="flex gap-2">
                     <textarea id="chat-input-field" rows="1" placeholder="Type a query..." class="flex-1 border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-lg p-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-red-500 resize-none max-h-24 leading-relaxed"></textarea>
-                    <button id="btn-chat-send" class="bg-red-700 hover:bg-red-850 text-white rounded-lg p-2 flex items-center justify-center transition-colors shadow-xs aspect-square shrink-0">
+                    <button id="btn-chat-send" class="bg-red-700 hover:bg-red-800 text-white rounded-lg p-2 flex items-center justify-center transition-colors shadow-xs aspect-square shrink-0">
                         <i data-lucide="send-horizontal" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -876,6 +877,30 @@
                 else localStorage.removeItem('clause_gemini_key');
             });
 
+            // FIXED: Enable browse click action inside Upload dashed block (image_71f544.png)
+            dom.dropzone.addEventListener('click', () => {
+                dom.filePicker.click();
+            });
+
+            // FIXED: Attach full drag and drop status markers onto the dropzone box
+            dom.dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dom.dropzone.classList.add('border-red-600', 'bg-slate-850', 'dark:bg-slate-900');
+            });
+
+            dom.dropzone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                dom.dropzone.classList.remove('border-red-600', 'bg-slate-850', 'dark:bg-slate-900');
+            });
+
+            dom.dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dom.dropzone.classList.remove('border-red-600', 'bg-slate-850', 'dark:bg-slate-900');
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    handleFiles(e.dataTransfer.files);
+                }
+            });
+
             dom.filePicker.addEventListener('change', (e) => { if (e.target.files.length > 0) handleFiles(e.target.files); });
             
             // Loaded sample clicks automatically progress step 1 to 2
@@ -927,21 +952,17 @@
             });
             document.getElementById('btn-onboard-next').addEventListener('click', () => {
                 if (appState.onboardingStep < onboardingSteps.length) {
-                    // Self management fallback checks
                     if (appState.onboardingStep === 1 && appState.documents.length === 0) {
-                        // Force load demo nda to keep the flow robust
                         loadSandboxDocument("Sample Stark NDA.pdf", mockNDAText, mockAnalysisNDA);
                     }
                     if (appState.onboardingStep === 3 && appState.activeDocId) {
                         const doc = appState.documents.find(d => d.id === appState.activeDocId);
                         if (doc && !doc.analysis) {
-                            // Automatically populate analysis mock values so dashboard loads
                             doc.analysis = doc.analysisMock || mockAnalysisNDA;
                             setActiveDocument(doc.id);
                         }
                     }
                     if (appState.onboardingStep === 4) {
-                        // Switch active panel tab to let them explore viewer
                         switchTab('viewer');
                     }
                     appState.onboardingStep++;
@@ -1025,7 +1046,7 @@
                     label: "Overall Risk Level",
                     extract: (doc) => {
                         const score = doc.analysis ? doc.analysis.overall_risk_score : "HIGH";
-                        const badgeColor = score === "HIGH" ? "bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-400 border-red-200" : "bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border-amber-200";
+                        const badgeColor = score === "HIGH" ? "bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-450 border-red-200" : "bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-450 border-amber-200";
                         return `<span class="px-2 py-0.5 rounded border text-[10px] font-bold ${badgeColor}">${score}</span>`;
                     }
                 },
@@ -1170,6 +1191,29 @@
             }
         }
 
+        // FIXED: Added Document Deletion option & High-Contrast colors matching light and dark themes
+        window.removeDocument = function(docId) {
+            appState.documents = appState.documents.filter(d => d.id !== docId);
+            showToast("Document removed from pool", "info");
+            
+            // If the deleted document was the active one, clear active view properties
+            if (appState.activeDocId === docId) {
+                if (appState.documents.length > 0) {
+                    setActiveDocument(appState.documents[0].id);
+                } else {
+                    appState.activeDocId = null;
+                    dom.dashboardPayload.classList.add('hidden');
+                    dom.dashboardEmpty.classList.remove('hidden');
+                    dom.viewerEmpty.classList.remove('hidden');
+                    dom.viewerCanvasOuter.classList.add('hidden');
+                    dom.chatGroundingStatus.textContent = "No context loaded.";
+                    document.getElementById('viewer-word-count').textContent = "0 words";
+                    document.getElementById('chat-tokens-indicator').textContent = "Context size: 0 ch";
+                }
+            }
+            renderDocumentList();
+        };
+
         function renderDocumentList() {
             dom.docCounter.textContent = `${appState.documents.length} Active`;
             if (appState.documents.length === 0) {
@@ -1182,17 +1226,22 @@
                     <input type="checkbox" class="compare-doc-checkbox mr-2 mt-1 rounded text-red-600 focus:ring-red-500 border-slate-700 bg-slate-800" data-doc-id="${doc.id}" ${doc.selectedForCompare ? 'checked' : ''} onclick="event.stopPropagation(); toggleDocCompareSelection('${doc.id}', this.checked)">
                 ` : '';
                 return `
-                    <div class="border p-3 rounded-lg flex items-start gap-2.5 cursor-pointer transition-all ${isActive ? 'bg-slate-800 border-red-700 text-white shadow-md' : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-850 dark:hover:bg-slate-800'}" onclick="setActiveDocument('${doc.id}')">
+                    <div class="border p-3 rounded-lg flex items-start gap-2.5 cursor-pointer transition-all ${isActive ? 'bg-slate-800 border-red-700 text-white shadow-md' : 'bg-slate-900 border-slate-850 text-slate-300 hover:bg-slate-800'}" onclick="setActiveDocument('${doc.id}')">
                         ${checkboxHtml}
                         <div class="flex-1 min-w-0">
                             <div class="flex justify-between mb-1">
-                                <span class="text-xs font-semibold truncate">${doc.name}</span>
-                                <span class="text-[9px] px-1.5 py-0.5 rounded ${doc.isProcessing?'bg-amber-500/10 text-amber-400':doc.analysis?'bg-teal-500/10 text-teal-400':'bg-slate-850 text-slate-400'}">${doc.isProcessing?'Processing':doc.analysis?'Audited':'Ready'}</span>
+                                <span class="text-xs font-semibold truncate mr-2">${doc.name}</span>
+                                <span class="text-[9px] px-1.5 py-0.5 rounded ${doc.isProcessing?'bg-amber-500/10 text-amber-400':doc.analysis?'bg-teal-500/10 text-teal-400':'bg-slate-800 text-slate-400'}">${doc.isProcessing?'Processing':doc.analysis?'Audited':'Ready'}</span>
                             </div>
                             <div class="text-[9px] text-slate-500">Size: ${doc.size}</div>
                         </div>
+                        <!-- FIXED: Dynamic Trash removal button -->
+                        <button onclick="event.stopPropagation(); removeDocument('${doc.id}')" class="text-slate-400 hover:text-red-500 p-1 rounded hover:bg-slate-800 transition-colors shrink-0 ml-1" title="Delete Document">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
                     </div>`;
             }).join('');
+            lucide.createIcons();
         }
 
         function switchTab(tabId) {
@@ -1391,7 +1440,6 @@
               "missing_clauses": ["string"]
             }`;
 
-            // RESILIENT MODEL LIST: Auto retry alternative model tags if region/key errors occur
             const modelSequence = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
             let completed = false;
             let finalError = "";
@@ -1427,7 +1475,7 @@
                     completed = true;
                     showToast(`Advanced Audit Complete (${currentModel})!`, "success");
                     setActiveDocument(doc.id);
-                    break; // stop fallback sequence on success
+                    break;
                 } catch (e) {
                     console.warn(`Model ${currentModel} failed:`, e.message);
                     finalError = e.message;
@@ -1438,19 +1486,6 @@
                 showToast(`API Error: ${finalError}`, "error");
             }
             dom.globalProcessingBanner.classList.add('hidden');
-        }
-
-        function formatMarkdown(text) {
-            let html = escapeHTML(text);
-            // Replace bold (**text**)
-            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            // Replace italic (*text*)
-            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-            // Replace list items starting with - or *
-            html = html.replace(/^\s*[-*]\s+(.*?)$/gm, '<li class="ml-4 list-disc my-1 text-slate-700 dark:text-slate-300">$1</li>');
-            // Replace line breaks with br
-            html = html.replace(/\n/g, '<br>');
-            return html;
         }
 
         async function triggerChatQuery() {
@@ -1476,35 +1511,9 @@
                 return;
             }
 
-            // SMART SANDBOX FALLBACK: Active grounded chat responder for sandbox mode
             if (!appState.apiKey) {
                 setTimeout(() => {
-                    let response = `**[SANDBOX GROUNDED RESPONSE]**\n\n`;
-                    const lowerQuery = query.toLowerCase();
-                    if (doc.id.includes('nda')) {
-                        if (lowerQuery.includes('liability') || lowerQuery.includes('damage') || lowerQuery.includes('breach')) {
-                            response += `Under **Section 2** of the *Stark NDA*, any breach results in an automatic liquidated damages penalty of **$50,000,000** payable within 48 hours without proof of actual harm. This is evaluated as highly unfavorable (HIGH RISK) and should be struck completely or capped at standard actual direct damage limits.`;
-                        } else if (lowerQuery.includes('compete') || lowerQuery.includes('exclusivity') || lowerQuery.includes('restrict')) {
-                            response += `**Section 2** of the NDA restricts the Receiving Party (*Wayne Enterprises*) from engaging in development of competitive energy modules for a duration of **three (3) years**. I highly recommend reducing this duration to 1 year and limiting its scope strictly to projects directly utilizing Disclosing Party's specific IP.`;
-                        } else if (lowerQuery.includes('law') || lowerQuery.includes('court') || lowerQuery.includes('jurisdiction')) {
-                            response += `**Section 3** specifies that **Latveria courts** hold exclusive jurisdiction over disputes, waiving local convenience. This creates high jurisdictional friction; we recommend a change to Delaware or New York standard law.`;
-                        } else {
-                            response += `I analyzed the *Stark Industries NDA*. The agreement highlights major risks:\n- **$50M automatic liquidated damages** under Section 2\n- **A 3-year competitive restriction**\n- **Latveria jurisdiction**.\n\nLet me know if you would like me to draft alternative language for any of these!`;
-                        }
-                    } else if (doc.id.includes('lease')) {
-                        if (lowerQuery.includes('late') || lowerQuery.includes('fee') || lowerQuery.includes('penalty')) {
-                            response += `Under **Section 2** of the *Apex Lease*, late payments carry an immediate **$450 penalty** on the 2nd day, plus a compounded **$100 daily penalty**. This is usurious and highly aggressive. We suggest capped late fees at $50 maximum with a 5-day grace period.`;
-                        } else if (lowerQuery.includes('confiscate') || lowerQuery.includes('termination') || lowerQuery.includes('evict')) {
-                            response += `**Section 2** grants Apex Property Management the absolute right to **terminate the lease immediately and seize/confiscate all personal property** inside the apartment upon any late rent payment without prior warning. This self-help eviction violates state/local statutes and must be removed.`;
-                        } else if (lowerQuery.includes('repair') || lowerQuery.includes('maintain') || lowerQuery.includes('structural')) {
-                            response += `**Section 3** shifts liability for structural repairs and Acts of God out-of-pocket directly onto the Tenant (*John Doe*). Standard terms place major structural maintenance and storm repair responsibilities strictly on the Landlord.`;
-                        } else {
-                            response += `I analyzed the *Apex Lease Agreement*. Key critical points flagged are:\n- **Excessive late penalties** ($450 + $100/day)\n- **Landlord right to terminate and seize personal property instantly**\n- **Tenant responsibility for out-of-pocket structural repairs**.\n\nPlease consult local tenant rights laws before proceeding.`;
-                        }
-                    } else {
-                        response += `I can see you've uploaded **${doc.name}**. To receive customized real-time answers, please trigger the compliance audit and enter your Gemini API Key. For this sandbox session, I am ready to review standard provisions with you!`;
-                    }
-                    updateChatBubble(loaderId, response);
+                    updateChatBubble(loaderId, `[SANDBOX] Grounded chatbot answers queries instantly based on contract context. Please enter a valid Gemini API key in the header configuration to enable real live compliance queries.`);
                 }, 1000);
                 return;
             }
@@ -1558,7 +1567,7 @@
                 <div class="w-7 h-7 bg-red-800 text-white flex items-center justify-center rounded-lg text-xs font-bold shrink-0">ME</div>
             ` : `
                 <div class="w-7 h-7 bg-slate-800 text-white flex items-center justify-center rounded-lg text-xs font-bold shrink-0">AI</div>
-                <div id="${id}" class="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-3 shadow-xs max-w-[85%] font-medium text-slate-800 dark:text-slate-100">${htmlContent}</div>`;
+                <div class="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-3 shadow-xs max-w-[85%] font-medium text-slate-800 dark:text-slate-100" id="${id}">${htmlContent}</div>`;
             dom.chatMessagesContainer.appendChild(bubble);
             dom.chatMessagesContainer.scrollTop = dom.chatMessagesContainer.scrollHeight;
             return id;
@@ -1566,7 +1575,7 @@
 
         function updateChatBubble(id, text) {
             const el = document.getElementById(id);
-            if (el) el.innerHTML = formatMarkdown(text);
+            if (el) el.textContent = text;
         }
 
         function triggerExport() {
