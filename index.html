@@ -645,7 +645,7 @@
             documents: [], activeDocId: null, chatHistory: {},
             compareMode: false, apiAbortController: null, isDark: false, activeViewerPageIdx: 0,
             timingFilter: 'ALL', onboardingStep: 1, onboardingActive: false,
-            viewerMode: 'paginated' // Added: 'paginated' or 'continuous' to solve image_735608.png
+            viewerMode: 'paginated' // 'paginated' or 'continuous' view types
         };
 
         // ADVANCED SAMPLE CONTRACT FILES
@@ -1236,11 +1236,11 @@
             dom.documentListContainer.innerHTML = appState.documents.map(doc => {
                 const isActive = doc.id === appState.activeDocId;
                 
-                // FIXED LAYOUT (image_73523f.png): Ensure checkbox, name metadata and delete icon are strictly on the exact same row with no wrapping
+                // FIXED LAYOUT (image_73b839.png): Strictly single row layout, non-wrapping, perfectly aligned horizontally
                 return `
                     <div class="border p-3 rounded-xl flex flex-row items-center justify-between gap-3 cursor-pointer transition-all ${isActive ? 'bg-slate-800 border-red-600 text-white shadow-lg ring-1 ring-red-500/20' : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800'}" onclick="setActiveDocument('${doc.id}')">
                         <!-- Left Block: Checkbox, Icon, and File Description text -->
-                        <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                        <div class="flex flex-row items-center gap-2.5 min-w-0 flex-1">
                             <input type="checkbox" class="compare-doc-checkbox w-4 h-4 rounded text-red-600 focus:ring-red-500 border-slate-700 bg-slate-800 cursor-pointer shrink-0" data-doc-id="${doc.id}" ${doc.selectedForCompare ? 'checked' : ''} onclick="event.stopPropagation(); toggleDocCompareSelection('${doc.id}', this.checked)">
                             
                             <div class="p-1.5 bg-slate-800/60 dark:bg-slate-900/60 rounded text-slate-400 shrink-0 flex items-center justify-center">
@@ -1259,7 +1259,7 @@
                             </div>
                         </div>
 
-                        <!-- Right Block: Centered Delete/Trash Icon -->
+                        <!-- Right Block: Centered Delete/Trash Icon (Always on the exact same row) -->
                         <div class="flex items-center shrink-0">
                             <button onclick="event.stopPropagation(); removeDocument('${doc.id}')" class="text-slate-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-500/10 transition-all duration-200" title="Delete Document">
                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -1287,7 +1287,6 @@
 
         function splitDocToPages(text) { return text.split(/--- Page \d+ ---/gi).map(p=>p.trim()).filter(p=>p!==""); }
 
-        // Dynamic highlighter parsing with support for both strict Paginated View and Continuous Flow View
         function renderPaginatedPage() {
             const doc = appState.documents.find(d => d.id === appState.activeDocId);
             if (!doc) return;
