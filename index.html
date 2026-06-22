@@ -12,7 +12,6 @@
                 extend: {
                     colors: {
                         slate: {
-                            850: '#1e293b',
                             950: '#090d16',
                             900: '#0f172a'
                         }
@@ -33,6 +32,7 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        /* Custom scrollbar adjustments for dark and light themes */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -54,6 +54,7 @@
             background: #94a3b8;
         }
         
+        /* Interactive Highlight Overlays for interactive doc preview */
         .highlight-high {
             background-color: rgba(239, 68, 68, 0.15);
             color: #ef4444;
@@ -91,6 +92,7 @@
             color: #99f6e4;
         }
 
+        /* Sidebar, Panel transition curves */
         #sidebar-panel, #chat-panel {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -121,6 +123,7 @@
             100% { outline: 3px solid rgba(234, 179, 8, 0.7); outline-offset: 4px; }
         }
 
+        /* Simulated Document Previews */
         .paper-page {
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
@@ -205,7 +208,7 @@
                 <span class="text-xs font-semibold text-slate-200 cursor-pointer select-none" id="txt-compare-label">Compare Mode</span>
             </div>
 
-            <!-- API Key -->
+            <!-- API Key Input Block -->
             <div class="flex items-center gap-2">
                 <div class="relative">
                     <input type="password" id="api-key-input" placeholder="Enter Gemini API Key..." 
@@ -230,10 +233,10 @@
 
     <main class="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0 relative pb-16 md:pb-0">
         
-        <!-- LEFT PANEL: CONTRACTS POOL -->
+        <!-- LEFT PANEL: CONTRACTS POOL (image_71f544.png) -->
         <section id="sidebar-panel" class="w-full md:w-72 lg:w-80 bg-slate-900 dark:bg-slate-950 border-r border-slate-800 dark:border-slate-900 flex flex-col shrink-0 text-slate-300 z-10">
             <div class="p-3 border-b border-slate-800 dark:border-slate-900">
-                <!-- drag & dropzone container reference from image_71f544.png -->
+                <!-- Dropzone trigger container reference from image_71f544.png -->
                 <div id="dropzone" class="border-2 border-dashed border-slate-700 hover:border-red-600 rounded-xl p-4 text-center cursor-pointer transition-all bg-slate-800/40 hover:bg-slate-800/85 group">
                     <input type="file" id="file-picker" multiple accept=".pdf" class="hidden">
                     <div class="flex flex-col items-center gap-1.5">
@@ -433,13 +436,24 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: VIEWER PAPER PAGE -->
+                <!-- TAB 2: VIEWER PAPER PAGE (Supports both strict pagination and full continuous layout styles) -->
                 <div id="content-viewer" class="hidden space-y-4">
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3 flex justify-between items-center shrink-0 shadow-xs">
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3 flex flex-col sm:flex-row gap-3 justify-between items-center shrink-0 shadow-xs">
                         <div class="flex items-center gap-2">
                             <i data-lucide="file-text" class="w-4 h-4 text-slate-800 dark:text-slate-200"></i>
                             <span class="text-xs font-bold text-slate-700 dark:text-slate-300" id="txt-lbl-viewer-title">Interactive Markup Explorer</span>
                         </div>
+                        
+                        <!-- NEW CONTROLLER: View Mode Toggles (Directly answers image_735608.png) -->
+                        <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-lg p-1">
+                            <button id="btn-view-mode-paginated" class="px-3 py-1 text-[10px] font-bold rounded-md transition-all bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs flex items-center gap-1">
+                                <i data-lucide="book-open" class="w-3 h-3"></i> Paginated Page
+                            </button>
+                            <button id="btn-view-mode-continuous" class="px-3 py-1 text-[10px] font-bold rounded-md transition-all text-slate-500 dark:text-slate-450 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1">
+                                <i data-lucide="scroll" class="w-3 h-3"></i> Continuous Flow
+                            </button>
+                        </div>
+
                         <span class="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded font-mono" id="viewer-word-count">0 words</span>
                     </div>
                     
@@ -448,12 +462,15 @@
                         <p class="text-xs text-slate-400" id="txt-viewer-empty">Choose a document from the left list to explore parsed context.</p>
                     </div>
 
+                    <!-- PREVIEW CONTAINER AND FOOTER WRAPPER -->
                     <div id="viewer-canvas-outer" class="hidden flex flex-col gap-4">
                         <div class="flex justify-center">
-                            <!-- Paper Simulation Wrapper with h-auto and min-h instead of strict forced aspect ratio -->
-                            <div class="w-full max-w-[800px] min-h-[500px] md:min-h-[650px] h-auto bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 p-8 md:p-12 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 transition-all text-xs font-mono leading-relaxed select-text overflow-y-auto whitespace-pre-wrap relative paper-page" id="viewer-container"></div>
+                            <!-- Refactored dynamic height simulated paper content box without empty space issues -->
+                            <div class="w-full max-w-[800px] min-h-[400px] h-auto bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 p-8 md:p-12 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 transition-all text-xs font-mono leading-relaxed select-text overflow-y-auto whitespace-pre-wrap relative paper-page" id="viewer-container"></div>
                         </div>
-                        <div class="flex items-center justify-between max-w-[800px] w-full mx-auto bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-xs shadow-xs">
+                        
+                        <!-- Page Navigator Panel: dynamic layout depending on view selection style -->
+                        <div id="viewer-navigator-bar" class="flex items-center justify-between max-w-[800px] w-full mx-auto bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-xs shadow-xs transition-opacity duration-200">
                             <button id="btn-prev-page" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg font-bold flex items-center gap-1 transition-colors">
                                 <i data-lucide="chevron-left" class="w-4 h-4"></i> Prev Page
                             </button>
@@ -627,7 +644,8 @@
             currentLang: 'en', apiKey: '', rememberKey: false,
             documents: [], activeDocId: null, chatHistory: {},
             compareMode: false, apiAbortController: null, isDark: false, activeViewerPageIdx: 0,
-            timingFilter: 'ALL', onboardingStep: 1, onboardingActive: false
+            timingFilter: 'ALL', onboardingStep: 1, onboardingActive: false,
+            viewerMode: 'paginated' // Added: 'paginated' or 'continuous' to solve image_735608.png
         };
 
         // ADVANCED SAMPLE CONTRACT FILES
@@ -707,75 +725,70 @@
             missing_clauses: ["Security Deposit terms (amount, return conditions)", "Utilities responsibility (which party pays for what)", "Landlord access rights and notice requirements", "Pet policy (if applicable)", "Subletting/Assignment provisions", "Return of premises conditions"]
         };
 
+        const onboardingSteps = [
+            { element: 'dropzone', text: "Welcome to ClauseLLM! You can upload custom PDF contracts here, or click one of the demo agreements below to load it instantly." },
+            { element: 'document-list-container', text: "Your loaded agreements live here in the pool. When Compare Mode is toggled above, use the checkbox beside each card to select files for side-by-side matrices!" },
+            { element: 'btn-trigger-audit', text: "Select a contract, then click 'Trigger Advanced Audit' to audit risk scores and get a customized negotiation plan." },
+            { element: 'tab-viewer', text: "Click Document Preview to switch to the interactive markup explorer and read parsed text with risk highlights." },
+            { element: 'btn-view-mode-continuous', text: "NEW: Switch to 'Continuous Flow' to read contract texts continuously without gaps, or 'Paginated Page' to view exact PDF pages." },
+            { element: 'chat-panel', text: "Ask questions here! Type queries like 'What is the liability cap?' to instantly get answers grounded in the loaded contract." }
+        ];
+
         const dom = {
-            langSelector: document.getElementById('lang-selector'), compareModeToggle: document.getElementById('compare-mode-toggle'),
-            apiKeyInput: document.getElementById('api-key-input'), toggleKeyVisibility: document.getElementById('toggle-key-visibility'),
-            rememberKeyCheckbox: document.getElementById('remember-key-checkbox'), dropzone: document.getElementById('dropzone'),
-            filePicker: document.getElementById('file-picker'), documentListContainer: document.getElementById('document-list-container'),
-            docEmptyState: document.getElementById('doc-empty-state'), docCounter: document.getElementById('doc-counter'),
-            progressBarContainer: document.getElementById('processing-progress-bar-container'), progressBar: document.getElementById('extraction-progress-bar'),
-            progressBarPercent: document.getElementById('extraction-progress-percent'), tabDashboard: document.getElementById('tab-dashboard'),
-            tabViewer: document.getElementById('tab-viewer'), tabCompare: document.getElementById('tab-compare'),
-            dashboardEmpty: document.getElementById('dashboard-empty'), dashboardPayload: document.getElementById('dashboard-payload'),
-            metaDocType: document.getElementById('meta-doc-type'), metaDocName: document.getElementById('meta-doc-name'),
-            metaDuration: document.getElementById('meta-duration'), metaParties: document.getElementById('meta-parties'),
-            metaEffective: document.getElementById('meta-effective'), metaPayment: document.getElementById('meta-payment'),
-            missingClausesList: document.getElementById('missing-clauses-list'), riskCardsContainer: document.getElementById('risk-cards-container'),
-            btnTriggerAudit: document.getElementById('btn-trigger-audit'), globalProcessingBanner: document.getElementById('global-processing-banner'),
-            btnCancelApiRequest: document.getElementById('btn-cancel-api-request'),
-            chatGroundingStatus: document.getElementById('chat-grounding-status'), chatMessagesContainer: document.getElementById('chat-messages-container'),
-            chatInputField: document.getElementById('chat-input-field'), btnChatSend: document.getElementById('btn-chat-send'),
-            btnDemo1: document.getElementById('btn-load-demo-1'), btnDemo2: document.getElementById('btn-load-demo-2'),
-            themeToggle: document.getElementById('btn-theme-toggle'), sidebarPanel: document.getElementById('sidebar-panel'),
-            chatPanel: document.getElementById('chat-panel'), btnToggleSidebar: document.getElementById('btn-toggle-sidebar'),
-            btnToggleChat: document.getElementById('btn-toggle-chat'), viewerCanvasOuter: document.getElementById('viewer-canvas-outer'),
-            viewerContainer: document.getElementById('viewer-container'), viewerEmpty: document.getElementById('viewer-empty'),
-            pageIndicator: document.getElementById('txt-page-indicator'),
-            filterTabs: document.querySelectorAll('.filter-tab'),
+            themeToggle: document.getElementById('btn-theme-toggle'),
+            btnToggleSidebar: document.getElementById('btn-toggle-sidebar'),
+            btnToggleChat: document.getElementById('btn-toggle-chat'),
+            sidebarPanel: document.getElementById('sidebar-panel'),
+            chatPanel: document.getElementById('chat-panel'),
+            langSelector: document.getElementById('lang-selector'),
+            apiKeyInput: document.getElementById('api-key-input'),
+            toggleKeyVisibility: document.getElementById('toggle-key-visibility'),
+            rememberKeyCheckbox: document.getElementById('remember-key-checkbox'),
+            dropzone: document.getElementById('dropzone'),
+            filePicker: document.getElementById('file-picker'),
+            btnDemo1: document.getElementById('btn-load-demo-1'),
+            btnDemo2: document.getElementById('btn-load-demo-2'),
+            docCounter: document.getElementById('doc-counter'),
+            documentListContainer: document.getElementById('document-list-container'),
+            docEmptyState: document.getElementById('doc-empty-state'),
+            progressBarContainer: document.getElementById('processing-progress-bar-container'),
+            progressBar: document.getElementById('extraction-progress-bar'),
+            progressPercent: document.getElementById('extraction-progress-percent'),
+            tabDashboard: document.getElementById('tab-dashboard'),
+            tabViewer: document.getElementById('tab-viewer'),
+            tabCompare: document.getElementById('tab-compare'),
+            dashboardEmpty: document.getElementById('dashboard-empty'),
+            dashboardPayload: document.getElementById('dashboard-payload'),
+            btnTriggerAudit: document.getElementById('btn-trigger-audit'),
+            perspectiveSelector: document.getElementById('perspective-selector'),
             metaRiskBadge: document.getElementById('meta-risk-badge'),
             metaPrioritiesList: document.getElementById('meta-priorities-list'),
             metaLeverageNote: document.getElementById('meta-leverage-note'),
-            verdictColorBar: document.getElementById('verdict-color-bar'),
-            perspectiveSelector: document.getElementById('perspective-selector')
+            metaDocType: document.getElementById('meta-doc-type'),
+            metaDocName: document.getElementById('meta-doc-name'),
+            metaDuration: document.getElementById('meta-duration'),
+            metaParties: document.getElementById('meta-parties'),
+            metaEffective: document.getElementById('meta-effective'),
+            metaPayment: document.getElementById('meta-payment'),
+            missingClausesList: document.getElementById('missing-clauses-list'),
+            riskCardsContainer: document.getElementById('risk-cards-container'),
+            filterTabs: document.querySelectorAll('.filter-tab'),
+            viewerEmpty: document.getElementById('viewer-empty'),
+            viewerCanvasOuter: document.getElementById('viewer-canvas-outer'),
+            viewerContainer: document.getElementById('viewer-container'),
+            pageIndicator: document.getElementById('txt-page-indicator'),
+            globalProcessingBanner: document.getElementById('global-processing-banner'),
+            chatGroundingStatus: document.getElementById('chat-grounding-status'),
+            chatMessagesContainer: document.getElementById('chat-messages-container'),
+            chatInputField: document.getElementById('chat-input-field'),
+            btnChatSend: document.getElementById('btn-chat-send'),
+            compareModeToggle: document.getElementById('compare-mode-toggle'),
+            verdictColorBar: document.getElementById('verdict-color-bar')
         };
-
-        // ONBOARDING WIZARD STEPS DEFINITION
-        const onboardingSteps = [
-            {
-                element: "demo-buttons-row",
-                text: "Welcome to ClauseLLM! Let's get started. Load a sample agreement by clicking 'Sample NDA' or 'Sample Lease' right here.",
-                align: "bottom"
-            },
-            {
-                element: "perspective-selector-container",
-                text: "Choose the party you represent in the contract! ClauseLLM scores risk from your perspective rather than giving generic reviews.",
-                align: "top"
-            },
-            {
-                element: "btn-trigger-audit",
-                text: "Now click 'Trigger Advanced Audit' to launch our compliance scan. This checks the document against professional checklists.",
-                align: "top"
-            },
-            {
-                element: "verdict-summary-card",
-                text: "Great! Look at your Audit Deck. It displays your overall risk score, critical action priorities, and custom negotiation leverage insights.",
-                align: "bottom"
-            },
-            {
-                element: "tab-viewer",
-                text: "Want to see where risks reside inside the contract text? Switch to the 'Document Preview' tab to view a realistic page markup map.",
-                align: "bottom"
-            },
-            {
-                element: "chat-composer",
-                text: "Finally, have any doubts? Query our Grounded Legal Assistant. Type in questions to draft counter-proposals instantly!",
-                align: "top"
-            }
-        ];
 
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
-            toast.className = `flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg border text-xs font-semibold transform translate-y-2 transition-all duration-300 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700`;
+            toast.className = `flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg border text-xs font-semibold transform translate-y-2 transition-all duration-300 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 z-50`;
             const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-triangle' : 'info';
             const color = type === 'success' ? 'text-teal-500' : type === 'error' ? 'text-red-500' : 'text-blue-500';
             toast.innerHTML = `<i data-lucide="${icon}" class="w-4.5 h-4.5 ${color}"></i><span class="text-slate-700 dark:text-slate-200">${message}</span>`;
@@ -880,17 +893,17 @@
 
             dom.dropzone.addEventListener('dragover', (e) => {
                 e.preventDefault();
-                dom.dropzone.classList.add('border-red-650', 'bg-slate-800/80');
+                dom.dropzone.classList.add('border-red-600', 'bg-slate-800/80');
             });
 
             dom.dropzone.addEventListener('dragleave', (e) => {
                 e.preventDefault();
-                dom.dropzone.classList.remove('border-red-650', 'bg-slate-800/80');
+                dom.dropzone.classList.remove('border-red-600', 'bg-slate-800/80');
             });
 
             dom.dropzone.addEventListener('drop', (e) => {
                 e.preventDefault();
-                dom.dropzone.classList.remove('border-red-650', 'bg-slate-800/80');
+                dom.dropzone.classList.remove('border-red-600', 'bg-slate-800/80');
                 if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
                     handleFiles(e.dataTransfer.files);
                 }
@@ -898,7 +911,6 @@
 
             dom.filePicker.addEventListener('change', (e) => { if (e.target.files.length > 0) handleFiles(e.target.files); });
             
-            // Loaded sample clicks automatically progress step 1 to 2
             dom.btnDemo1.addEventListener('click', () => {
                 loadSandboxDocument("Sample Stark NDA.pdf", mockNDAText, mockAnalysisNDA);
                 if (appState.onboardingActive && appState.onboardingStep === 1) {
@@ -920,6 +932,27 @@
             dom.tabViewer.addEventListener('click', () => switchTab('viewer'));
             dom.tabCompare.addEventListener('click', () => switchTab('compare'));
 
+            // View Mode click handlers: Paginated vs Continuous toggle actions
+            const btnPaginated = document.getElementById('btn-view-mode-paginated');
+            const btnContinuous = document.getElementById('btn-view-mode-continuous');
+            const navigatorBar = document.getElementById('viewer-navigator-bar');
+
+            btnPaginated.addEventListener('click', () => {
+                appState.viewerMode = 'paginated';
+                btnPaginated.className = "px-3 py-1 text-[10px] font-bold rounded-md transition-all bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs flex items-center gap-1";
+                btnContinuous.className = "px-3 py-1 text-[10px] font-bold rounded-md transition-all text-slate-500 dark:text-slate-450 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1";
+                navigatorBar.classList.remove('opacity-30', 'pointer-events-none');
+                renderPaginatedPage();
+            });
+
+            btnContinuous.addEventListener('click', () => {
+                appState.viewerMode = 'continuous';
+                btnContinuous.className = "px-3 py-1 text-[10px] font-bold rounded-md transition-all bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs flex items-center gap-1";
+                btnPaginated.className = "px-3 py-1 text-[10px] font-bold rounded-md transition-all text-slate-500 dark:text-slate-450 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1";
+                navigatorBar.classList.add('opacity-30', 'pointer-events-none');
+                renderPaginatedPage();
+            });
+
             dom.filterTabs.forEach(tab => {
                 tab.addEventListener('click', (e) => {
                     appState.timingFilter = e.target.dataset.filter;
@@ -929,9 +962,11 @@
             });
 
             document.getElementById('btn-prev-page').addEventListener('click', () => {
+                if(appState.viewerMode === 'continuous') return;
                 if(appState.activeViewerPageIdx > 0) { appState.activeViewerPageIdx--; renderPaginatedPage(); }
             });
             document.getElementById('btn-next-page').addEventListener('click', () => {
+                if(appState.viewerMode === 'continuous') return;
                 const doc = appState.documents.find(d => d.id === appState.activeDocId);
                 if (doc && appState.activeViewerPageIdx < splitDocToPages(doc.text).length - 1) {
                     appState.activeViewerPageIdx++; renderPaginatedPage();
@@ -1081,18 +1116,6 @@
             showToast("Comparison Matrix created!", "success");
         }
 
-        function updateFilterTabsUI() {
-            dom.filterTabs.forEach(tab => {
-                if (tab.dataset.filter === appState.timingFilter) {
-                    tab.classList.add('bg-white', 'dark:bg-slate-700', 'text-slate-900', 'dark:text-slate-100', 'shadow-xs');
-                    tab.classList.remove('text-slate-500', 'dark:text-slate-400');
-                } else {
-                    tab.classList.remove('bg-white', 'dark:bg-slate-700', 'text-slate-900', 'dark:text-slate-100', 'shadow-xs');
-                    tab.classList.add('text-slate-500', 'dark:text-slate-400');
-                }
-            });
-        }
-
         function applyTheme() {
             if (appState.isDark) document.documentElement.classList.add('dark');
             else document.documentElement.classList.remove('dark');
@@ -1213,32 +1236,35 @@
             dom.documentListContainer.innerHTML = appState.documents.map(doc => {
                 const isActive = doc.id === appState.activeDocId;
                 
+                // FIXED LAYOUT (image_73523f.png): Ensure checkbox, name metadata and delete icon are strictly on the exact same row with no wrapping
                 return `
-                    <div class="border p-3 rounded-xl flex items-center justify-between gap-3 cursor-pointer transition-all ${isActive ? 'bg-slate-800 border-red-600 text-white shadow-lg ring-1 ring-red-500/20' : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800'}" onclick="setActiveDocument('${doc.id}')">
-                        <!-- Left block: Checkbox + file metadata -->
+                    <div class="border p-3 rounded-xl flex flex-row items-center justify-between gap-3 cursor-pointer transition-all ${isActive ? 'bg-slate-800 border-red-600 text-white shadow-lg ring-1 ring-red-500/20' : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800'}" onclick="setActiveDocument('${doc.id}')">
+                        <!-- Left Block: Checkbox, Icon, and File Description text -->
                         <div class="flex items-center gap-2.5 min-w-0 flex-1">
                             <input type="checkbox" class="compare-doc-checkbox w-4 h-4 rounded text-red-600 focus:ring-red-500 border-slate-700 bg-slate-800 cursor-pointer shrink-0" data-doc-id="${doc.id}" ${doc.selectedForCompare ? 'checked' : ''} onclick="event.stopPropagation(); toggleDocCompareSelection('${doc.id}', this.checked)">
                             
-                            <div class="p-1.5 bg-slate-800 dark:bg-slate-900 rounded text-slate-400 shrink-0 flex items-center justify-center">
+                            <div class="p-1.5 bg-slate-800/60 dark:bg-slate-900/60 rounded text-slate-400 shrink-0 flex items-center justify-center">
                                 <i data-lucide="file-text" class="w-4 h-4"></i>
                             </div>
 
                             <div class="min-w-0 flex-1">
                                 <h5 class="text-xs font-bold truncate pr-1" title="${escapeHTML(doc.name)}">${escapeHTML(doc.name)}</h5>
-                                <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 flex flex-wrap items-center gap-1.5">
+                                <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1 truncate">
                                     <span>${doc.size}</span>
-                                    <span class="inline-block w-1 h-1 rounded-full bg-slate-700 dark:bg-slate-550"></span>
+                                    <span>•</span>
                                     <span class="${doc.isProcessing ? 'text-amber-400' : doc.analysis ? 'text-teal-400' : 'text-slate-400'} font-semibold">
                                         ${doc.isProcessing ? 'Processing' : doc.analysis ? 'Audited' : 'Ready'}
                                     </span>
-                                </div>
+                                </p>
                             </div>
                         </div>
 
-                        <!-- Right block: Delete document button -->
-                        <button onclick="event.stopPropagation(); removeDocument('${doc.id}')" class="text-slate-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-500/10 transition-all duration-200 shrink-0 ml-1" title="Delete Document">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        </button>
+                        <!-- Right Block: Centered Delete/Trash Icon -->
+                        <div class="flex items-center shrink-0">
+                            <button onclick="event.stopPropagation(); removeDocument('${doc.id}')" class="text-slate-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-500/10 transition-all duration-200" title="Delete Document">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
                     </div>`;
             }).join('');
             lucide.createIcons();
@@ -1261,25 +1287,64 @@
 
         function splitDocToPages(text) { return text.split(/--- Page \d+ ---/gi).map(p=>p.trim()).filter(p=>p!==""); }
 
+        // Dynamic highlighter parsing with support for both strict Paginated View and Continuous Flow View
         function renderPaginatedPage() {
             const doc = appState.documents.find(d => d.id === appState.activeDocId);
             if (!doc) return;
-            const pages = splitDocToPages(doc.text);
-            dom.pageIndicator.textContent = `Page ${appState.activeViewerPageIdx + 1} of ${pages.length || 1}`;
             
-            let highlightedText = escapeHTML(pages[appState.activeViewerPageIdx] || "");
-            if (doc.analysis && doc.analysis.risk_flags) {
-                doc.analysis.risk_flags.forEach(flag => {
-                    const phrase = flag.clause_excerpt.trim();
-                    if(phrase.length < 5) return;
-                    let riskClass = flag.risk_level === 'HIGH' ? "highlight-high" : flag.risk_level === 'MEDIUM' ? "highlight-medium" : "highlight-low";
-                    try {
-                        const re = new RegExp(`(${escapeHTML(phrase).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "gi");
-                        highlightedText = highlightedText.replace(re, `<mark class="${riskClass}">$1</mark>`);
-                    } catch(e){}
+            const pages = splitDocToPages(doc.text);
+            let finalHtml = "";
+
+            if (appState.viewerMode === 'continuous') {
+                // CONTINUOUS VIEW MODE: Eliminate all page voids by appending text sequentially
+                dom.pageIndicator.textContent = "Continuous Flow Enabled";
+                
+                pages.forEach((pageContent, idx) => {
+                    let pageHtml = escapeHTML(pageContent || "");
+                    
+                    // Inject Highlight markups on matches
+                    if (doc.analysis && doc.analysis.risk_flags) {
+                        doc.analysis.risk_flags.forEach(flag => {
+                            const phrase = flag.clause_excerpt.trim();
+                            if(phrase.length < 5) return;
+                            let riskClass = flag.risk_level === 'HIGH' ? "highlight-high" : flag.risk_level === 'MEDIUM' ? "highlight-medium" : "highlight-low";
+                            try {
+                                const re = new RegExp(`(${escapeHTML(phrase).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "gi");
+                                pageHtml = pageHtml.replace(re, `<mark class="${riskClass}">$1</mark>`);
+                            } catch(e){}
+                        });
+                    }
+
+                    finalHtml += `
+                        <div class="mb-6 pb-6 border-b border-dashed border-slate-200 dark:border-slate-800">
+                            <div class="flex items-center gap-2 mb-3 text-[10px] text-slate-400 font-bold uppercase select-none">
+                                <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                                <span>Page ${idx + 1} of ${pages.length}</span>
+                            </div>
+                            <div class="whitespace-pre-wrap">${pageHtml}</div>
+                        </div>`;
                 });
+            } else {
+                // PAGINATED VIEW MODE: Strictly separate page segments
+                dom.pageIndicator.textContent = `Page ${appState.activeViewerPageIdx + 1} of ${pages.length || 1}`;
+                let pageHtml = escapeHTML(pages[appState.activeViewerPageIdx] || "");
+                
+                if (doc.analysis && doc.analysis.risk_flags) {
+                    doc.analysis.risk_flags.forEach(flag => {
+                        const phrase = flag.clause_excerpt.trim();
+                        if(phrase.length < 5) return;
+                        let riskClass = flag.risk_level === 'HIGH' ? "highlight-high" : flag.risk_level === 'MEDIUM' ? "highlight-medium" : "highlight-low";
+                        try {
+                            const re = new RegExp(`(${escapeHTML(phrase).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "gi");
+                            pageHtml = pageHtml.replace(re, `<mark class="${riskClass}">$1</mark>`);
+                        } catch(e){}
+                    });
+                }
+                finalHtml = `<div class="whitespace-pre-wrap">${pageHtml}</div>`;
             }
-            dom.viewerContainer.innerHTML = highlightedText;
+
+            dom.viewerContainer.innerHTML = finalHtml;
+            lucide.createIcons();
         }
 
         function escapeHTML(str) { return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
@@ -1378,6 +1443,16 @@
                 dom.riskCardsContainer.innerHTML = `<div class="text-center py-8 text-xs font-bold text-slate-400">No risks match this filter.</div>`;
             }
             lucide.createIcons();
+        }
+
+        function updateFilterTabsUI() {
+            dom.filterTabs.forEach(tab => {
+                if (tab.dataset.filter === appState.timingFilter) {
+                    tab.className = "filter-tab px-3 py-1 rounded-md transition-all bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs";
+                } else {
+                    tab.className = "filter-tab px-3 py-1 rounded-md transition-all text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200";
+                }
+            });
         }
 
         async function triggerAuditRequest() {
@@ -1583,12 +1658,12 @@
             bubble.className = "flex gap-2 " + (isUser ? "justify-end" : "");
             bubble.innerHTML = isUser ? `
                 <div class="bg-red-700 text-white rounded-xl p-3 shadow-xs max-w-[85%]">
-                    <p class="text-xs leading-relaxed font-medium">${htmlContent}</p>
+                    <p class="text-xs leading-relaxed font-semibold">${htmlContent}</p>
                 </div>
-                <div class="w-7 h-7 bg-red-805 text-white flex items-center justify-center rounded-lg text-xs font-bold shrink-0">ME</div>
+                <div class="w-7 h-7 bg-red-800 text-white flex items-center justify-center rounded-lg text-xs font-bold shrink-0">ME</div>
             ` : `
                 <div class="w-7 h-7 bg-slate-800 text-white flex items-center justify-center rounded-lg text-xs font-bold shrink-0">AI</div>
-                <div class="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-3 shadow-xs max-w-[85%] font-medium text-slate-800 dark:text-slate-100" id="${id}">${htmlContent}</div>`;
+                <div class="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-3 shadow-xs max-w-[85%] text-slate-800 dark:text-slate-100" id="${id}">${htmlContent}</div>`;
             dom.chatMessagesContainer.appendChild(bubble);
             dom.chatMessagesContainer.scrollTop = dom.chatMessagesContainer.scrollHeight;
             return id;
@@ -1649,7 +1724,6 @@
             showToast("Audit summary report exported!", "success");
         }
 
-        // Active tab/navigation panes manager for mobile layouts
         function setActiveMobilePane(pane) {
             dom.sidebarPanel.classList.add('collapsed-panel');
             dom.chatPanel.classList.add('collapsed-panel');
