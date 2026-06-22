@@ -3,29 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ClauseLLM — Legal Contract Analyzer</title>
+    <title>ClauseLLM — Advanced Legal Contract Auditor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
-                extend: {}
+                extend: {
+                    colors: {
+                        slate: {
+                            950: '#090d16',
+                            900: '#0f172a'
+                        }
+                    }
+                }
             }
         }
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- PDF.js Client-Side Extraction Libraries -->
+    <!-- PDF.js Client-Side Extraction Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
-        /* Custom scrollbars */
+        /* Scrollbar customizing */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -34,7 +41,7 @@
             background: transparent;
         }
         .dark ::-webkit-scrollbar-track {
-            background: #0f172a;
+            background: #090d16;
         }
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
@@ -47,51 +54,45 @@
             background: #94a3b8;
         }
         
-        /* Interactive Highlight styles for risk overlay in text explorer */
+        /* Highlighting styles for risk overlay in simulated document paper */
         .highlight-high {
-            background-color: #fee2e2;
-            color: #991b1b;
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
             font-weight: 600;
-            padding: 2px 4px;
-            border-radius: 4px;
             border-bottom: 2px solid #ef4444;
-            transition: all 0.2s;
+            padding: 1px 2px;
+            border-radius: 2px;
         }
         .dark .highlight-high {
-            background-color: #7f1d1d;
-            color: #fecaca;
-            border-bottom-color: #f87171;
+            background-color: rgba(239, 68, 68, 0.25);
+            color: #fca5a5;
         }
         .highlight-medium {
-            background-color: #fef3c7;
-            color: #92400e;
+            background-color: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
             font-weight: 600;
-            padding: 2px 4px;
-            border-radius: 4px;
             border-bottom: 2px solid #f59e0b;
-            transition: all 0.2s;
+            padding: 1px 2px;
+            border-radius: 2px;
         }
         .dark .highlight-medium {
-            background-color: #78350f;
-            color: #fef08a;
-            border-bottom-color: #fbbf24;
+            background-color: rgba(245, 158, 11, 0.25);
+            color: #fde047;
         }
         .highlight-low {
-            background-color: #ccfbf1;
-            color: #115e59;
+            background-color: rgba(20, 184, 166, 0.15);
+            color: #0d9488;
             font-weight: 600;
-            padding: 2px 4px;
-            border-radius: 4px;
-            border-bottom: 2px solid #14b8a6;
-            transition: all 0.2s;
+            border-bottom: 2px solid #20b2aa;
+            padding: 1px 2px;
+            border-radius: 2px;
         }
         .dark .highlight-low {
-            background-color: #115e59;
-            color: #ccfbf1;
-            border-bottom-color: #2dd4bf;
+            background-color: rgba(20, 184, 166, 0.25);
+            color: #99f6e4;
         }
 
-        /* Collapsible sidebar/chat panel selectors */
+        /* Fluid layout panel collapse controllers */
         #sidebar-panel, #chat-panel {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -107,29 +108,57 @@
             pointer-events: none;
         }
 
-        /* RTL tweaks */
         .rtl-mode {
             direction: rtl;
             text-align: right;
         }
 
-        /* Onboarding Highlighter Pulsar */
-        .onboard-highlight {
-            outline: 3px solid #f59e0b !important;
-            outline-offset: 3px;
-            border-radius: 8px !important;
-            animation: pulse-glow 1.5s infinite alternate;
+        /* Walkthrough overlay wizard elements */
+        .walkthrough-ring {
+            box-shadow: 0 0 0 4px #eab308, 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+            animation: ring-pulse 2s infinite;
         }
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
-            100% { box-shadow: 0 0 0 12px rgba(245, 158, 11, 0); }
+        @keyframes ring-pulse {
+            0% { outline: 3px solid rgba(234, 179, 8, 0.7); outline-offset: 4px; }
+            50% { outline: 3px solid rgba(234, 179, 8, 0); outline-offset: 12px; }
+            100% { outline: 3px solid rgba(234, 179, 8, 0.7); outline-offset: 4px; }
+        }
+
+        /* Simulated page previews (A4 Aspect Ratio) */
+        .paper-page {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 <body class="h-full flex flex-col text-slate-800 dark:text-slate-100 antialiased overflow-hidden bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
 
-    <!-- Toast Notification Container -->
+    <!-- Toast Notification Overlay -->
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Onboarding Guide HUD Overlay Card -->
+    <div id="walkthrough-hud" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 dark:bg-slate-950 text-white border border-slate-700 dark:border-slate-800 p-4 rounded-xl shadow-2xl max-w-md w-[92%] flex flex-col gap-3 transition-all duration-300">
+        <div class="flex items-start justify-between">
+            <div class="flex items-center gap-2">
+                <div class="p-1 bg-yellow-500 rounded text-slate-950 flex items-center justify-center">
+                    <i data-lucide="compass" class="w-4 h-4"></i>
+                </div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-yellow-500" id="walkthrough-hud-title">Onboarding Walkthrough</h4>
+            </div>
+            <button id="btn-onboard-skip" class="text-[10px] text-slate-400 hover:text-white underline">Skip Tour</button>
+        </div>
+        <p id="walkthrough-hud-text" class="text-xs text-slate-200 leading-relaxed"></p>
+        <div class="flex items-center justify-between border-t border-slate-800 pt-2.5 mt-1">
+            <span id="walkthrough-hud-steps" class="text-[10px] text-slate-400 font-mono">Step 1 of 5</span>
+            <div class="flex gap-1.5">
+                <button id="btn-onboard-prev" class="px-2.5 py-1 text-[10px] font-bold text-slate-400 hover:text-white disabled:opacity-30 flex items-center gap-1" disabled>
+                    <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i> Back
+                </button>
+                <button id="btn-onboard-next" class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-slate-950 text-[10px] font-bold rounded-md flex items-center gap-1">
+                    Next Step <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <header class="bg-slate-900 dark:bg-slate-950 text-white px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-800 shrink-0 shadow-md z-30">
         <div class="flex items-center justify-between w-full md:w-auto gap-3">
@@ -143,7 +172,7 @@
                 <div>
                     <h1 class="text-lg font-bold tracking-tight flex items-center gap-2">
                         <span id="txt-app-title">ClauseLLM</span>
-                        <span class="text-[10px] bg-red-600/30 text-red-400 px-2 py-0.5 rounded-full border border-red-500/20 font-medium tracking-normal" id="txt-app-badge">v3.0 Advanced</span>
+                        <span class="text-[10px] bg-red-650/30 text-red-400 px-2 py-0.5 rounded-full border border-red-500/20 font-medium tracking-normal" id="txt-app-badge">v3.0 Advanced</span>
                     </h1>
                     <p class="text-[10px] text-slate-400" id="txt-app-subtitle">Intelligent AI Legal Document Analyzer & Compliance Auditor</p>
                 </div>
@@ -172,7 +201,7 @@
             </div>
 
             <!-- Compare Mode Toggle -->
-            <div class="flex items-center gap-2 bg-slate-800 dark:bg-slate-900 border border-slate-700 dark:border-slate-800 rounded-lg px-3 py-1.5">
+            <div id="container-compare-toggle" class="flex items-center gap-2 bg-slate-800 dark:bg-slate-900 border border-slate-700 dark:border-slate-800 rounded-lg px-3 py-1.5">
                 <label class="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" id="compare-mode-toggle" class="sr-only peer">
                     <div class="w-9 h-5 bg-slate-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-700"></div>
@@ -196,7 +225,7 @@
                 </div>
             </div>
 
-            <!-- Chat assistant Desktop toggler -->
+            <!-- Chat Assistant Toggle -->
             <button id="btn-toggle-chat" class="hidden md:flex p-2 bg-slate-800 dark:bg-slate-900 border border-slate-700 dark:border-slate-800 rounded-lg text-slate-400 hover:text-white transition-colors" title="Toggle AI Assistant Panel">
                 <i data-lucide="message-square" class="w-4 h-4"></i>
             </button>
@@ -205,7 +234,7 @@
 
     <main class="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0 relative pb-16 md:pb-0">
         
-        <!-- LEFT SIDEBAR -->
+        <!-- LEFT PANEL: CONTRACTS POOL -->
         <section id="sidebar-panel" class="w-full md:w-72 lg:w-80 bg-slate-900 dark:bg-slate-950 border-r border-slate-800 dark:border-slate-900 flex flex-col shrink-0 text-slate-300 z-10">
             <div class="p-3 border-b border-slate-800 dark:border-slate-900">
                 <div id="dropzone" class="border-2 border-dashed border-slate-700 hover:border-red-600 rounded-xl p-4 text-center cursor-pointer transition-all bg-slate-800/40 hover:bg-slate-800/80 group">
@@ -219,12 +248,12 @@
                     </div>
                 </div>
                 
-                <div class="mt-2.5 flex gap-2">
+                <div class="mt-2.5 flex gap-2" id="demo-buttons-row">
                     <button id="btn-load-demo-1" class="flex-1 text-[10px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 py-1.5 rounded font-medium flex items-center justify-center gap-1 transition-all">
-                        <i data-lucide="file-text" class="w-3 h-3 text-red-400"></i> Sample NDA
+                        <i data-lucide="file-text" class="w-3 h-3 text-red-450"></i> Sample NDA
                     </button>
                     <button id="btn-load-demo-2" class="flex-1 text-[10px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 py-1.5 rounded font-medium flex items-center justify-center gap-1 transition-all">
-                        <i data-lucide="file-text" class="w-3 h-3 text-amber-400"></i> Sample Lease
+                        <i data-lucide="file-text" class="w-3 h-3 text-amber-450"></i> Sample Lease
                     </button>
                 </div>
             </div>
@@ -247,17 +276,17 @@
                     <span id="extraction-progress-percent">0%</span>
                 </div>
                 <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                    <div id="extraction-progress-bar" class="bg-red-600 h-full w-0 transition-all duration-300"></div>
+                    <div id="extraction-progress-bar" class="bg-red-650 h-full w-0 transition-all duration-300"></div>
                 </div>
             </div>
         </section>
 
-        <!-- CENTER PANEL -->
+        <!-- CENTER PANEL: DOCK + VIEWER -->
         <section class="flex-1 bg-white dark:bg-slate-900 flex flex-col min-w-0 overflow-hidden border-r border-slate-200 dark:border-slate-800">
             <!-- Tabs Menu -->
             <div class="bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 px-4 flex items-center justify-between shrink-0">
                 <div class="flex gap-1 mt-2">
-                    <button id="tab-dashboard" class="px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 border-b-2 border-red-700 bg-white dark:bg-slate-900 rounded-t-lg shadow-sm flex items-center gap-1.5">
+                    <button id="tab-dashboard" class="px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 border-b-2 border-red-700 bg-white dark:bg-slate-900 rounded-t-lg shadow-xs flex items-center gap-1.5">
                         <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-red-600"></i>
                         <span id="txt-tab-dashboard">Risk Dashboard</span>
                     </button>
@@ -271,14 +300,14 @@
                     </button>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button id="btn-export-txt" class="text-xs bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold px-2.5 py-1.5 border border-slate-300 dark:border-slate-700 rounded-lg flex items-center gap-1.5 shadow-sm transition-colors">
+                    <button id="btn-export-txt" class="text-xs bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold px-2.5 py-1.5 border border-slate-300 dark:border-slate-700 rounded-lg flex items-center gap-1.5 shadow-xs transition-colors">
                         <i data-lucide="download" class="w-3.5 h-3.5 text-slate-500"></i>
                         <span id="txt-export-button">Export</span>
                     </button>
                 </div>
             </div>
 
-            <!-- WORKSPACE -->
+            <!-- WORKSPACE CONTAINER -->
             <div class="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50 dark:bg-slate-900" id="panel-content-wrapper">
                 
                 <!-- TAB 1: DASHBOARD -->
@@ -288,31 +317,43 @@
                             <i data-lucide="cpu" class="w-7 h-7 text-slate-400"></i>
                         </div>
                         <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200" id="txt-dash-empty">Ready for Compliance Check</h3>
+                        
+                        <!-- Perspective Selector Inside Empty State Panel -->
+                        <div class="mt-4 max-w-xs mx-auto text-left space-y-1" id="perspective-selector-container">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Analyze From Your Perspective</label>
+                            <select id="perspective-selector" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs p-2 focus:outline-none focus:ring-1 focus:ring-red-500 font-medium">
+                                <option value="inf" selected>Let AI Autodetect Roles</option>
+                                <option value="Receiving Party / Tenant / Employee">Weaker Side (Tenant / Employee / Receiving Party)</option>
+                                <option value="Disclosing Party / Landlord / Employer">Stronger Side (Landlord / Employer / Disclosing Party)</option>
+                            </select>
+                        </div>
+
                         <div class="mt-6">
-                            <button id="btn-trigger-audit" class="bg-red-700 hover:bg-red-800 text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow-md inline-flex items-center gap-2 transition-all hover:scale-105 active:scale-95">
+                            <button id="btn-trigger-audit" class="bg-red-700 hover:bg-red-850 text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow-md inline-flex items-center gap-2 transition-all hover:scale-105 active:scale-95">
                                 <i data-lucide="shield-check" class="w-4 h-4"></i>
                                 <span id="txt-audit-btn">Trigger Advanced Audit</span>
                             </button>
                         </div>
                     </div>
 
+                    <!-- RISK METRICS WRAPPER -->
                     <div id="dashboard-payload" class="hidden space-y-6">
                         <!-- VERDICT SUMMARY CARD -->
-                        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 shadow-sm relative overflow-hidden">
+                        <div class="bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs relative overflow-hidden" id="verdict-summary-card">
                             <div class="absolute top-0 left-0 w-1.5 h-full bg-slate-300" id="verdict-color-bar"></div>
                             <div class="pl-4 flex flex-col md:flex-row gap-6 items-start">
-                                <!-- Score -->
+                                <!-- Score Badge -->
                                 <div class="shrink-0 flex flex-col items-center justify-center min-w-[120px]">
                                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1" id="txt-lbl-verdict">Overall Risk</span>
                                     <div id="meta-risk-badge" class="px-4 py-2 rounded-lg font-black text-lg border">N/A</div>
                                 </div>
-                                <!-- Priorities -->
+                                <!-- Strategic Priorities List -->
                                 <div class="flex-1">
                                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block" id="txt-lbl-priorities">Top 3 Priorities Before Signing</span>
                                     <ul id="meta-priorities-list" class="space-y-1.5 text-xs text-slate-700 dark:text-slate-300"></ul>
                                 </div>
-                                <!-- Leverage -->
-                                <div class="flex-1 bg-slate-50 dark:bg-slate-900/50 rounded-lg p-3 border border-slate-100 dark:border-slate-700/50">
+                                <!-- Leverage Card -->
+                                <div class="flex-1 bg-slate-50 dark:bg-slate-900/50 rounded-lg p-3 border border-slate-100 dark:border-slate-800/50">
                                     <div class="flex items-center gap-1.5 mb-1 text-slate-500">
                                         <i data-lucide="scale-3d" class="w-3.5 h-3.5"></i>
                                         <span class="text-[10px] font-bold uppercase tracking-wider" id="txt-lbl-leverage">Negotiation Leverage</span>
@@ -322,13 +363,13 @@
                             </div>
                         </div>
 
-                        <!-- Top Overview Header: Doc Details & Missing Clauses -->
+                        <!-- General Profile cards -->
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col justify-between shadow-sm">
+                            <div class="bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col justify-between shadow-xs">
                                 <div>
                                     <div class="flex items-center justify-between mb-2">
                                         <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase" id="txt-lbl-profile">Agreement Profile</span>
-                                        <span id="meta-doc-type" class="text-[10px] bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 px-2 py-0.5 rounded-full font-bold">Unidentified</span>
+                                        <span id="meta-doc-type" class="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-2 py-0.5 rounded-full font-bold">Unidentified</span>
                                     </div>
                                     <h4 id="meta-doc-name" class="text-sm font-bold text-slate-800 dark:text-slate-100 line-clamp-2">Document Name</h4>
                                 </div>
@@ -338,7 +379,7 @@
                                 </div>
                             </div>
 
-                            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 space-y-2 shadow-sm">
+                            <div class="bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-2 shadow-xs">
                                 <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase" id="txt-lbl-terms">Key Signatures & Terms</span>
                                 <div class="text-xs space-y-1.5">
                                     <div class="flex justify-between">
@@ -356,7 +397,7 @@
                                 </div>
                             </div>
 
-                            <div class="bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/60 rounded-xl p-4 flex flex-col justify-between shadow-sm">
+                            <div class="bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/60 rounded-xl p-4 flex flex-col justify-between shadow-xs">
                                 <div>
                                     <div class="flex items-center gap-1.5 text-amber-850 dark:text-amber-400 mb-2">
                                         <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600"></i>
@@ -369,7 +410,7 @@
                             </div>
                         </div>
 
-                        <!-- Risks Area -->
+                        <!-- Interactive Filter Tabs -->
                         <div class="space-y-3">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                 <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
@@ -377,7 +418,6 @@
                                     <span id="txt-lbl-risks">Flagged Risk Allocations & Warnings</span>
                                 </h3>
                                 
-                                <!-- Timing Filter Tabs -->
                                 <div class="flex bg-slate-200 dark:bg-slate-800 rounded-lg p-1 text-[10px] font-bold">
                                     <button class="filter-tab px-3 py-1 rounded-md transition-all text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200" data-filter="ALL" id="txt-filter-all">All Risks</button>
                                     <button class="filter-tab px-3 py-1 rounded-md transition-all text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200" data-filter="IMMEDIATE" id="txt-filter-imm">Immediate</button>
@@ -386,7 +426,7 @@
                             </div>
 
                             <div id="risk-cards-container" class="space-y-3">
-                                <!-- Cards injected dynamically -->
+                                <!-- Cards injected here -->
                             </div>
                         </div>
 
@@ -396,9 +436,9 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: VIEWER -->
+                <!-- TAB 2: VIEWER PAPER PAGE -->
                 <div id="content-viewer" class="hidden space-y-4">
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3 flex justify-between items-center shrink-0 shadow-sm">
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3 flex justify-between items-center shrink-0 shadow-xs">
                         <div class="flex items-center gap-2">
                             <i data-lucide="file-text" class="w-4 h-4 text-slate-800 dark:text-slate-200"></i>
                             <span class="text-xs font-bold text-slate-700 dark:text-slate-300" id="txt-lbl-viewer-title">Interactive Markup Explorer</span>
@@ -413,9 +453,10 @@
 
                     <div id="viewer-canvas-outer" class="hidden flex flex-col gap-4">
                         <div class="flex justify-center">
-                            <div class="w-full max-w-[800px] aspect-[1/1.414] bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 p-8 md:p-12 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 transition-all text-xs font-mono leading-relaxed select-text overflow-y-auto whitespace-pre-wrap relative" id="viewer-container"></div>
+                            <!-- Paper Simulation Wrapper -->
+                            <div class="w-full max-w-[800px] aspect-[1/1.414] bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 p-8 md:p-12 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 transition-all text-xs font-mono leading-relaxed select-text overflow-y-auto whitespace-pre-wrap relative paper-page" id="viewer-container"></div>
                         </div>
-                        <div class="flex items-center justify-between max-w-[800px] w-full mx-auto bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-xs shadow-sm">
+                        <div class="flex items-center justify-between max-w-[800px] w-full mx-auto bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-xs shadow-xs">
                             <button id="btn-prev-page" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg font-bold flex items-center gap-1 transition-colors">
                                 <i data-lucide="chevron-left" class="w-4 h-4"></i> Prev Page
                             </button>
@@ -443,7 +484,7 @@
                         </button>
                     </div>
 
-                    <div id="compare-matrix-wrapper" class="hidden overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm bg-white dark:bg-slate-900">
+                    <div id="compare-matrix-wrapper" class="hidden overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-xl shadow-xs bg-white dark:bg-slate-900">
                         <table class="w-full text-xs text-left text-slate-500 dark:text-slate-400 border-collapse rtl:text-right">
                             <thead class="text-[10px] text-slate-400 uppercase bg-slate-50 dark:bg-slate-950 tracking-wider border-b border-slate-200 dark:border-slate-800">
                                 <tr id="compare-table-header"></tr>
@@ -454,7 +495,7 @@
                 </div>
             </div>
             
-            <!-- Global Loader -->
+            <!-- Global Processing Loader -->
             <div id="global-processing-banner" class="hidden bg-red-50/90 dark:bg-red-950/90 border-t border-red-100 dark:border-red-900/40 p-4 shrink-0 flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div class="animate-spin rounded-full h-5 w-5 border-2 border-red-700 border-t-transparent"></div>
@@ -467,15 +508,15 @@
             </div>
         </section>
 
-        <!-- RIGHT PANEL -->
+        <!-- RIGHT PANEL: GROUNDED CHAT BOT -->
         <section id="chat-panel" class="w-full md:w-80 lg:w-96 bg-slate-50 dark:bg-slate-900 border-t md:border-t-0 md:border-l border-slate-200 dark:border-slate-800 flex flex-col shrink-0 overflow-hidden z-10 transition-all duration-300">
-            <div class="bg-slate-900 dark:bg-slate-950 text-white p-3 flex items-center justify-between shrink-0 shadow-sm border-b border-slate-800">
+            <div class="bg-slate-900 dark:bg-slate-950 text-white p-3 flex items-center justify-between shrink-0 shadow-xs border-b border-slate-800">
                 <div class="flex items-center gap-2">
                     <div class="relative">
                         <i data-lucide="message-square" class="w-4 h-4 text-red-400"></i>
                         <span class="absolute top-0 right-0 w-1.5 h-1.5 bg-green-500 rounded-full"></span>
                     </div>
-                    <span class="text-xs font-bold uppercase tracking-wider" id="txt-chat-title">Contract Assistant</span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-white" id="txt-chat-title">Contract Assistant</span>
                 </div>
                 <button id="btn-clear-chat" title="Clear Chat Thread" class="text-slate-400 hover:text-white transition-colors">
                     <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -498,10 +539,10 @@
                 </div>
             </div>
 
-            <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
+            <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0" id="chat-composer">
                 <div class="flex gap-2">
                     <textarea id="chat-input-field" rows="1" placeholder="Type a query..." class="flex-1 border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-lg p-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-red-500 resize-none max-h-24 leading-relaxed"></textarea>
-                    <button id="btn-chat-send" class="bg-red-700 hover:bg-red-800 text-white rounded-lg p-2 flex items-center justify-center transition-colors shadow-xs aspect-square shrink-0">
+                    <button id="btn-chat-send" class="bg-red-700 hover:bg-red-850 text-white rounded-lg p-2 flex items-center justify-center transition-colors shadow-xs aspect-square shrink-0">
                         <i data-lucide="send-horizontal" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -514,6 +555,7 @@
 
     </main>
 
+    <!-- Mobile Navigation Grid -->
     <nav id="mobile-nav-bar" class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 flex justify-around items-center z-40 shadow-lg">
         <button onclick="setActiveMobilePane('pool')" id="m-btn-pool" class="flex flex-col items-center gap-1 text-red-600 dark:text-red-400">
             <i data-lucide="folder" class="w-5 h-5"></i>
@@ -530,7 +572,7 @@
     </nav>
 
     <script>
-        // I18N DICTIONARY
+        // I18N LOCALIZATION DICTIONARY DEFINITION
         const i18n = {
             en: {
                 appTitle: "ClauseLLM", appBadge: "v3.0 Advanced", appSubtitle: "Intelligent AI Legal Document Analyzer & Compliance Auditor",
@@ -588,22 +630,22 @@
             currentLang: 'en', apiKey: '', rememberKey: false,
             documents: [], activeDocId: null, chatHistory: {},
             compareMode: false, apiAbortController: null, isDark: false, activeViewerPageIdx: 0,
-            timingFilter: 'ALL' // 'ALL' | 'IMMEDIATE' | 'FUTURE_CONTINGENT'
+            timingFilter: 'ALL', onboardingStep: 1, onboardingActive: false
         };
 
-        // ADVANCED MOCK DATA (With Verdict, Recommendations & Timing)
+        // ADVANCED SAMPLE CONTRACT FILES
         const mockNDAText = `--- Page 1 ---\nNON-DISCLOSURE AGREEMENT (NDA)\nThis Non-Disclosure Agreement (the "Agreement") is entered into this 14th day of May, 2026, by and between Stark Industries Inc. ("Disclosing Party") and Wayne Enterprises Corp ("Receiving Party").\n1. PURPOSE & SCOPE\nWayne Enterprises wishes to evaluate a potential business combination. In connection with this evaluation, Stark Industries may disclose proprietary technical engineering details.\n--- Page 2 ---\n2. STRICT EXCLUSIVITY AND RESTRICTION\nThe Receiving Party shall maintain confidentiality for a period of ten (10) years. Additionally, Receiving Party agrees that it will not, for a period of three (3) years, engage in any development of competitive energy modules. \nWARNING: Any breach shall incur automatic liquidated damages of $50,000,000 payable within 48 hours, without requiring proof of actual harm.\n--- Page 3 ---\n3. GOVERNING LAW & JURISDICTION\nThis agreement shall be governed under the exclusive jurisdiction of the courts of Latveria, waving any claim to local convenience.`;
         
         const mockAnalysisNDA = {
             document_type: "Non-Disclosure Agreement (NDA)",
             key_terms: { parties: "Stark Industries & Wayne Enterprises", effective_date: "May 14, 2026", duration: "10 Years confidentiality, 3 Years non-compete", payment_terms: "$50,000,000 liquidated damages", termination: "Not defined" },
-            overall_risk_score: "MODERATE",
+            overall_risk_score: "HIGH",
             top_3_priorities: [
-                "Strike the $50M liquidated damages clause",
-                "Reduce non-compete duration and scope",
-                "Change governing law to local jurisdiction"
+                "Strike the $50M liquidated damages clause completely.",
+                "Reduce the non-compete duration down to 1 year.",
+                "Amend governing law to a standard neutral territory like Delaware."
             ],
-            negotiation_leverage_note: "Standard business evaluation; you have strong leverage to push back on extreme penalties before entering talks.",
+            negotiation_leverage_note: "Standard business evaluation. Since Stark is disclosing, you have substantial room to negotiate mutual terms.",
             risk_flags: [
                 {
                     clause_excerpt: "Any breach shall incur automatic liquidated damages of $50,000,000 payable within 48 hours",
@@ -696,8 +738,43 @@
             metaRiskBadge: document.getElementById('meta-risk-badge'),
             metaPrioritiesList: document.getElementById('meta-priorities-list'),
             metaLeverageNote: document.getElementById('meta-leverage-note'),
-            verdictColorBar: document.getElementById('verdict-color-bar')
+            verdictColorBar: document.getElementById('verdict-color-bar'),
+            perspectiveSelector: document.getElementById('perspective-selector')
         };
+
+        // ONBOARDING WIZARD STEPS DEFINITION
+        const onboardingSteps = [
+            {
+                element: "demo-buttons-row",
+                text: "Welcome to ClauseLLM! Let's get started. Load a sample agreement by clicking 'Sample NDA' or 'Sample Lease' right here.",
+                align: "bottom"
+            },
+            {
+                element: "perspective-selector-container",
+                text: "Choose the party you represent in the contract! ClauseLLM scores risk from your perspective rather than giving generic reviews.",
+                align: "top"
+            },
+            {
+                element: "btn-trigger-audit",
+                text: "Now click 'Trigger Advanced Audit' to launch our compliance scan. This checks the document against professional checklists.",
+                align: "top"
+            },
+            {
+                element: "verdict-summary-card",
+                text: "Great! Look at your Audit Deck. It displays your overall risk score, critical action priorities, and custom negotiation leverage insights.",
+                align: "bottom"
+            },
+            {
+                element: "tab-viewer",
+                text: "Want to see where risks reside inside the contract text? Switch to the 'Document Preview' tab to view a realistic page markup map.",
+                align: "bottom"
+            },
+            {
+                element: "chat-composer",
+                text: "Finally, have any doubts? Query our Grounded Legal Assistant. Type in questions to draft counter-proposals instantly!",
+                align: "top"
+            }
+        ];
 
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
@@ -723,7 +800,55 @@
             applyTheme();
             bindEvents();
             updateUILanguage();
+            
+            // Auto start onboarding tutorial to guide user
+            startOnboarding();
             lucide.createIcons();
+        }
+
+        // ONBOARDING CONTROLLER
+        function startOnboarding() {
+            appState.onboardingStep = 1;
+            appState.onboardingActive = true;
+            document.getElementById('walkthrough-hud').classList.remove('hidden');
+            renderOnboardingStep();
+        }
+
+        function renderOnboardingStep() {
+            if (!appState.onboardingActive) return;
+            const step = onboardingSteps[appState.onboardingStep - 1];
+            
+            // Remove previous outlines
+            document.querySelectorAll('.walkthrough-ring').forEach(el => el.classList.remove('walkthrough-ring'));
+            
+            // Set HUD values
+            document.getElementById('walkthrough-hud-text').textContent = step.text;
+            document.getElementById('walkthrough-hud-steps').textContent = `Step ${appState.onboardingStep} of ${onboardingSteps.length}`;
+            
+            // Apply highlight outline to active DOM element
+            const targetEl = document.getElementById(step.element);
+            if (targetEl) {
+                targetEl.classList.add('walkthrough-ring');
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            // Manage prev button status
+            document.getElementById('btn-onboard-prev').disabled = appState.onboardingStep === 1;
+            
+            // Manage next text
+            const nextBtn = document.getElementById('btn-onboard-next');
+            if (appState.onboardingStep === onboardingSteps.length) {
+                nextBtn.innerHTML = `Finish <i data-lucide="check" class="w-3.5 h-3.5"></i>`;
+            } else {
+                nextBtn.innerHTML = `Next Step <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>`;
+            }
+            lucide.createIcons();
+        }
+
+        function closeOnboarding() {
+            appState.onboardingActive = false;
+            document.getElementById('walkthrough-hud').classList.add('hidden');
+            document.querySelectorAll('.walkthrough-ring').forEach(el => el.classList.remove('walkthrough-ring'));
         }
 
         function bindEvents() {
@@ -737,7 +862,7 @@
             dom.langSelector.addEventListener('change', (e) => { appState.currentLang = e.target.value; updateUILanguage(); });
             
             dom.apiKeyInput.addEventListener('input', (e) => {
-                appState.apiKey = e.target.value;
+                appState.apiKey = e.target.value.trim();
                 if (appState.rememberKey) localStorage.setItem('clause_gemini_key', appState.apiKey);
             });
             dom.toggleKeyVisibility.addEventListener('click', () => {
@@ -752,8 +877,22 @@
             });
 
             dom.filePicker.addEventListener('change', (e) => { if (e.target.files.length > 0) handleFiles(e.target.files); });
-            dom.btnDemo1.addEventListener('click', () => loadSandboxDocument("Sample Stark NDA.pdf", mockNDAText, mockAnalysisNDA));
-            dom.btnDemo2.addEventListener('click', () => loadSandboxDocument("Sample Apex Lease.pdf", mockLeaseText, mockAnalysisLease));
+            
+            // Loaded sample clicks automatically progress step 1 to 2
+            dom.btnDemo1.addEventListener('click', () => {
+                loadSandboxDocument("Sample Stark NDA.pdf", mockNDAText, mockAnalysisNDA);
+                if (appState.onboardingActive && appState.onboardingStep === 1) {
+                    appState.onboardingStep = 2;
+                    renderOnboardingStep();
+                }
+            });
+            dom.btnDemo2.addEventListener('click', () => {
+                loadSandboxDocument("Sample Apex Lease.pdf", mockLeaseText, mockAnalysisLease);
+                if (appState.onboardingActive && appState.onboardingStep === 1) {
+                    appState.onboardingStep = 2;
+                    renderOnboardingStep();
+                }
+            });
 
             dom.btnTriggerAudit.addEventListener('click', triggerAuditRequest);
             
@@ -778,15 +917,62 @@
                     appState.activeViewerPageIdx++; renderPaginatedPage();
                 }
             });
+
+            // Onboarding buttons row actions
+            document.getElementById('btn-onboard-prev').addEventListener('click', () => {
+                if (appState.onboardingStep > 1) {
+                    appState.onboardingStep--;
+                    renderOnboardingStep();
+                }
+            });
+            document.getElementById('btn-onboard-next').addEventListener('click', () => {
+                if (appState.onboardingStep < onboardingSteps.length) {
+                    // Self management fallback checks
+                    if (appState.onboardingStep === 1 && appState.documents.length === 0) {
+                        // Force load demo nda to keep the flow robust
+                        loadSandboxDocument("Sample Stark NDA.pdf", mockNDAText, mockAnalysisNDA);
+                    }
+                    if (appState.onboardingStep === 3 && appState.activeDocId) {
+                        const doc = appState.documents.find(d => d.id === appState.activeDocId);
+                        if (doc && !doc.analysis) {
+                            // Automatically populate analysis mock values so dashboard loads
+                            doc.analysis = doc.analysisMock || mockAnalysisNDA;
+                            setActiveDocument(doc.id);
+                        }
+                    }
+                    if (appState.onboardingStep === 4) {
+                        // Switch active panel tab to let them explore viewer
+                        switchTab('viewer');
+                    }
+                    appState.onboardingStep++;
+                    renderOnboardingStep();
+                } else {
+                    closeOnboarding();
+                    showToast("Walkthrough complete!", "success");
+                }
+            });
+            document.getElementById('btn-onboard-skip').addEventListener('click', closeOnboarding);
+
+            // Grounded chat logic
+            dom.btnChatSend.addEventListener('click', triggerChatQuery);
+            dom.chatInputField.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); triggerChatQuery(); }
+            });
+            document.getElementById('btn-clear-chat').addEventListener('click', () => {
+                dom.chatMessagesContainer.innerHTML = `<div class="flex gap-2"><div class="w-7 h-7 bg-slate-800 text-white flex items-center justify-center rounded-lg text-xs font-semibold shrink-0">AI</div><div class="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-3 shadow-xs max-w-[85%]"><p class="text-xs leading-relaxed text-slate-700 dark:text-slate-300">${t('chatWelcome')}</p></div></div>`;
+            });
+            
+            // Export printable report
+            document.getElementById('btn-export-txt').addEventListener('click', triggerExport);
         }
 
         function updateFilterTabsUI() {
             dom.filterTabs.forEach(tab => {
                 if (tab.dataset.filter === appState.timingFilter) {
-                    tab.classList.add('bg-white', 'dark:bg-slate-700', 'text-slate-900', 'dark:text-slate-100', 'shadow-sm');
+                    tab.classList.add('bg-white', 'dark:bg-slate-700', 'text-slate-900', 'dark:text-slate-100', 'shadow-xs');
                     tab.classList.remove('text-slate-500', 'dark:text-slate-400');
                 } else {
-                    tab.classList.remove('bg-white', 'dark:bg-slate-700', 'text-slate-900', 'dark:text-slate-100', 'shadow-sm');
+                    tab.classList.remove('bg-white', 'dark:bg-slate-700', 'text-slate-900', 'dark:text-slate-100', 'shadow-xs');
                     tab.classList.add('text-slate-500', 'dark:text-slate-400');
                 }
             });
@@ -805,7 +991,7 @@
             if (isRTL) document.documentElement.classList.add('rtl-mode');
             else document.documentElement.classList.remove('rtl-mode');
 
-            // Apply translations to static ids
+            // Apply translations
             Object.keys(i18n['en']).forEach(key => {
                 const el = document.getElementById('txt-' + key.replace(/([A-Z])/g, "-$1").toLowerCase());
                 if (el) el.textContent = t(key);
@@ -839,10 +1025,10 @@
                     }
                     const docObj = appState.documents.find(d => d.id === docId);
                     if (docObj) { docObj.text = text.trim(); docObj.isProcessing = false; }
-                    showToast("Document loaded", "success");
+                    showToast("Document loaded successfully", "success");
                     renderDocumentList();
                     if (appState.documents.length === 1) setActiveDocument(docId);
-                } catch (e) { showToast("PDF Error", "error"); }
+                } catch (e) { showToast("Error parsing PDF file", "error"); }
                 dom.progressBarContainer.classList.add('hidden');
             };
             reader.readAsArrayBuffer(file);
@@ -869,6 +1055,7 @@
             if (doc.text) {
                 dom.viewerEmpty.classList.add('hidden'); dom.viewerCanvasOuter.classList.remove('hidden');
                 document.getElementById('viewer-word-count').textContent = doc.text.split(/\s+/).length + ' words';
+                document.getElementById('chat-tokens-indicator').textContent = `Context size: ${doc.text.length} ch`;
                 renderPaginatedPage();
             }
 
@@ -890,7 +1077,7 @@
             dom.documentListContainer.innerHTML = appState.documents.map(doc => {
                 const isActive = doc.id === appState.activeDocId;
                 return `
-                    <div class="border p-3 rounded-lg flex items-start gap-2.5 cursor-pointer transition-all ${isActive ? 'bg-slate-800 border-red-700/80 text-white shadow-md' : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800/40'}" onclick="setActiveDocument('${doc.id}')">
+                    <div class="border p-3 rounded-lg flex items-start gap-2.5 cursor-pointer transition-all ${isActive ? 'bg-slate-850 border-red-700 text-white shadow-md' : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-850'}" onclick="setActiveDocument('${doc.id}')">
                         <div class="flex-1 min-w-0">
                             <div class="flex justify-between mb-1">
                                 <span class="text-xs font-semibold truncate">${doc.name}</span>
@@ -907,7 +1094,7 @@
                 const btn = document.getElementById('tab-' + id);
                 const content = document.getElementById('content-' + id);
                 if (id === tabId) {
-                    btn.className = "px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 border-b-2 border-red-700 bg-white dark:bg-slate-900 rounded-t-lg shadow-sm flex items-center gap-1.5";
+                    btn.className = "px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 border-b-2 border-red-700 bg-white dark:bg-slate-900 rounded-t-lg shadow-xs flex items-center gap-1.5";
                     content.classList.remove('hidden');
                     if(id==='viewer') renderPaginatedPage();
                 } else {
@@ -962,9 +1149,9 @@
             }
 
             dom.metaPrioritiesList.innerHTML = (payload.top_3_priorities || []).map(p => `<li class="flex gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i><span>${p}</span></li>`).join('');
-            dom.metaLeverageNote.textContent = payload.negotiation_leverage_note || "Standard leverage applicable.";
+            dom.metaLeverageNote.textContent = payload.negotiation_leverage_note || "Standard market level leverage.";
 
-            // Overview Details
+            // Overview details
             dom.metaDocType.textContent = payload.document_type || "Contract";
             dom.metaDocName.textContent = doc.name;
             dom.metaDuration.textContent = payload.key_terms?.duration || "N/A";
@@ -974,7 +1161,7 @@
             
             dom.missingClausesList.innerHTML = (payload.missing_clauses || []).map(c => `<li>${c}</li>`).join('') || `<li>None detected</li>`;
 
-            // Filter logic
+            // Filter lists based on timeline trigger selection
             const filteredRisks = (payload.risk_flags || []).filter(flag => {
                 if (appState.timingFilter === 'ALL') return true;
                 return flag.timing === appState.timingFilter;
@@ -1002,7 +1189,7 @@
                         <div class="mt-3 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-900">
                             <div class="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
                                 <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500">${t('recAction')}:</span>
-                                <span class="text-[10px] font-bold text-white px-2 py-0.5 rounded shadow-sm ${acColor}">${flag.recommendation.action}</span>
+                                <span class="text-[10px] font-bold text-white px-2 py-0.5 rounded shadow-xs ${acColor}">${flag.recommendation.action}</span>
                             </div>
                             <div class="p-3 text-xs text-slate-700 dark:text-slate-300">
                                 <span class="font-bold block mb-1 text-[10px] text-slate-400 uppercase">${t('suggestedChange')}</span>
@@ -1042,8 +1229,9 @@
             const doc = appState.documents.find(d => d.id === appState.activeDocId);
             if (!doc) return showToast("Select a document.", "warning");
 
+            // SANDBOX FALLBACK: Trigger mock template if API Key is empty
             if (!appState.apiKey) {
-                showToast("Simulating Advanced Audit without API key.", "info");
+                showToast("Simulating Advanced Compliance Audit...", "info");
                 dom.globalProcessingBanner.classList.remove('hidden');
                 setTimeout(() => {
                     doc.analysis = doc.analysisMock || mockAnalysisNDA;
@@ -1051,90 +1239,256 @@
                     dom.globalProcessingBanner.classList.add('hidden');
                     renderDocumentList();
                     setActiveDocument(doc.id);
-                }, 1000);
+                    if (appState.onboardingActive && appState.onboardingStep === 3) {
+                        appState.onboardingStep = 4;
+                        renderOnboardingStep();
+                    }
+                }, 1200);
                 return;
             }
 
             dom.globalProcessingBanner.classList.remove('hidden');
             const targetLang = dom.langSelector.options[dom.langSelector.selectedIndex].text;
+            const sidePerspective = dom.perspectiveSelector.value;
+
+            const systemPrompt = `You are ClauseLLM, an advanced AI legal document assistant.
+            You must evaluate contract risks specifically from the following party's perspective: ${sidePerspective}.
+
+            CRITICAL: Respond ONLY in ${targetLang}. All explanations must be in ${targetLang}.
+
+            STEP 1 — IDENTIFY CONTEXT
+            Detect document type: NDA, Lease, Employment Contract, Freelance, or Vendor.
+
+            STEP 2 — APPLY CHECKLISTS
+            Evaluate the risks from the user's perspective. 
+
+            STEP 3 — CLASSIFY FLAGGED CLAUSES
+            Format each clause as:
+            - clause_excerpt: max 30 words
+            - risk_level: HIGH | MEDIUM | LOW
+            - timing: IMMEDIATE | FUTURE_CONTINGENT
+            - recommendation: { action: ADD|REMOVE|MODIFY|NEGOTIATE|ACCEPT_AS_IS, suggested_change: "exact wording" }
+
+            Return EXACTLY this JSON structure:
+            {
+              "document_type": "string",
+              "key_terms": { "parties": "string", "effective_date": "string", "duration": "string", "payment_terms": "string", "termination": "string" },
+              "overall_risk_score": "LOW|MODERATE|HIGH",
+              "top_3_priorities": ["string", "string", "string"],
+              "negotiation_leverage_note": "string",
+              "risk_flags": [
+                { 
+                  "clause_excerpt": "string", "category": "string", "risk_level": "HIGH|MEDIUM|LOW", "favors": "USER|OTHER_PARTY|NEUTRAL", "timing": "IMMEDIATE|FUTURE_CONTINGENT", "explanation": "string",
+                  "recommendation": { "action": "ADD|REMOVE|MODIFY|NEGOTIATE|ACCEPT_AS_IS", "suggested_change": "string" }
+                }
+              ],
+              "missing_clauses": ["string"]
+            }`;
+
+            // RESILIENT MODEL LIST: Auto retry alternative model tags if region/key errors occur
+            const modelSequence = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+            let completed = false;
+            let finalError = "";
+
+            for (let i = 0; i < modelSequence.length; i++) {
+                const currentModel = modelSequence[i];
+                console.log(`Auditing using model: ${currentModel}`);
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${currentModel}:generateContent?key=${appState.apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: `Instructions:\n${systemPrompt}` }, { text: `Contract text:\n\n${doc.text}` }] }],
+                            generationConfig: { responseMimeType: "application/json" }
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errBody = await response.json();
+                        throw new Error(errBody.error?.message || `HTTP ${response.status}`);
+                    }
+
+                    const jsonResult = await response.json();
+                    let responseText = jsonResult.candidates[0].content.parts[0].text.trim();
+
+                    // Strip backticks if any
+                    if (responseText.startsWith('```json')) responseText = responseText.replace(/^```json\n?/, '');
+                    else if (responseText.startsWith('```')) responseText = responseText.replace(/^```\n?/, '');
+                    if (responseText.endsWith('```')) responseText = responseText.replace(/\n?```$/, '');
+
+                    doc.analysis = JSON.parse(responseText.trim());
+                    doc.isProcessing = false;
+                    completed = true;
+                    showToast(`Advanced Audit Complete (${currentModel})!`, "success");
+                    setActiveDocument(doc.id);
+                    break; // stop fallback sequence on success
+                } catch (e) {
+                    console.warn(`Model ${currentModel} failed:`, e.message);
+                    finalError = e.message;
+                }
+            }
+
+            if (!completed) {
+                showToast(`API Error: ${finalError}`, "error");
+            }
+            dom.globalProcessingBanner.classList.add('hidden');
+        }
+
+        async function triggerChatQuery() {
+            const query = dom.chatInputField.value.trim();
+            if (!query) return;
+            const doc = appState.documents.find(d => d.id === appState.activeDocId);
+            if (!doc) return showToast("Select a document first to provide AI context.", "warning");
+
+            // Add user bubble
+            appendChatBubble("user", query);
+            dom.chatInputField.value = '';
+
+            // Loading bubble
+            const loaderId = appendChatBubble("ai", `<div class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce"></div><div class="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce delay-75"></div><div class="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce delay-150"></div></div>`);
+
+            // Onboarding progression logic
+            if (appState.onboardingActive && appState.onboardingStep === 6) {
+                setTimeout(() => {
+                    updateChatBubble(loaderId, `Based on the active loaded contract "${doc.name}", the requested clause specifies conditions that are fully detailed in the document. As an expert advisor, I recommend raising these points in your next meeting. Always end your risk assessment with: *This is informational only, not legal advice.*`);
+                    closeOnboarding();
+                    showToast("Walkthrough Tutorial Completed!", "success");
+                }, 1000);
+                return;
+            }
+
+            if (!appState.apiKey) {
+                setTimeout(() => {
+                    updateChatBubble(loaderId, `[SANDBOX] Grounded chatbot answers queries instantly based on contract context. Please enter a valid Gemini API key in the header configuration to enable real live compliance queries.`);
+                }, 1000);
+                return;
+            }
+
+            // Real Grounded AI Fetch Sequence
+            const modelSequence = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+            let chatTextResult = "";
+            let chatSuccess = false;
+
+            for (let i = 0; i < modelSequence.length; i++) {
+                const model = modelSequence[i];
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${appState.apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [
+                                    { text: `You are ClauseLLM. Answer the user query strictly grounded in the document text provided below. Quote brief excerpts, identify the document, and be professional. If it's not in the document, say so. Do not guess.\n\nDocument Context:\n${doc.text}` },
+                                    { text: `User Query:\n${query}` }
+                                ]
+                            }]
+                        })
+                    });
+                    if (!response.ok) throw new Error("Fetch failed");
+                    const resJson = await response.json();
+                    chatTextResult = resJson.candidates[0].content.parts[0].text;
+                    chatSuccess = true;
+                    break;
+                } catch (e) {
+                    console.warn(`Chat model ${model} failed.`);
+                }
+            }
+
+            if (chatSuccess) {
+                updateChatBubble(loaderId, chatTextResult);
+            } else {
+                updateChatBubble(loaderId, "Sorry, we failed to query the API. Please verify your internet connection or your API Key setup.");
+            }
+        }
+
+        function appendChatBubble(role, htmlContent) {
+            const id = 'bubble_' + Date.now() + Math.random().toString(36).substr(2, 5);
+            const isUser = role === "user";
+            const bubble = document.createElement('div');
+            bubble.className = "flex gap-2 " + (isUser ? "justify-end" : "");
+            bubble.innerHTML = isUser ? `
+                <div class="bg-red-700 text-white rounded-xl p-3 shadow-xs max-w-[85%]">
+                    <p class="text-xs leading-relaxed font-medium">${htmlContent}</p>
+                </div>
+                <div class="w-7 h-7 bg-red-800 text-white flex items-center justify-center rounded-lg text-xs font-bold shrink-0">ME</div>
+            ` : `
+                <div class="w-7 h-7 bg-slate-800 text-white flex items-center justify-center rounded-lg text-xs font-bold shrink-0">AI</div>
+                <div class="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-3 shadow-xs max-w-[85%] font-medium">${htmlContent}</div>`;
+            dom.chatMessagesContainer.appendChild(bubble);
+            dom.chatMessagesContainer.scrollTop = dom.chatMessagesContainer.scrollHeight;
+            return id;
+        }
+
+        function updateChatBubble(id, text) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = text;
+        }
+
+        function triggerExport() {
+            const doc = appState.documents.find(d => d.id === appState.activeDocId);
+            if (!doc || !doc.analysis) return showToast("No analyzed contract loaded to export.", "warning");
             
-            const systemPrompt = `You are ClauseLLM, an advanced AI legal document assistant. 
-
-CRITICAL: Respond ONLY in ${targetLang}.
-
-STEP 1 — IDENTIFY CONTEXT
-Detect document type (NDA, Lease, Employment, Freelance, Vendor, etc). Identify the parties.
-
-STEP 2 — APPLY TYPE-SPECIFIC CHECKLISTS
-Scan for risks specific to the type (e.g. NDAs: duration, liquidated damages. Leases: rent escalation, confiscation).
-
-STEP 3 — CLASSIFY EVERY FLAGGED CLAUSE
-Assign risk (HIGH/MEDIUM/LOW), timing (IMMEDIATE/FUTURE_CONTINGENT), and recommend a specific action (ADD/REMOVE/MODIFY/NEGOTIATE/ACCEPT_AS_IS) with suggested wording.
-
-STEP 4 — IDENTIFY GAPS
-List missing standard clauses.
-
-STEP 5 — OVERALL VERDICT
-Provide an overall risk score, top 3 priorities before signing, and a negotiation leverage note.
-
-Return EXACTLY this JSON structure:
-{
-  "document_type": "string",
-  "key_terms": { "parties": "string", "effective_date": "string", "duration": "string", "payment_terms": "string", "termination": "string" },
-  "overall_risk_score": "LOW|MODERATE|HIGH",
-  "top_3_priorities": ["string", "string", "string"],
-  "negotiation_leverage_note": "string",
-  "risk_flags": [
-    { 
-      "clause_excerpt": "string", "category": "string", "risk_level": "HIGH|MEDIUM|LOW", "favors": "USER|OTHER_PARTY|NEUTRAL", "timing": "IMMEDIATE|FUTURE_CONTINGENT", "explanation": "string",
-      "recommendation": { "action": "ADD|REMOVE|MODIFY|NEGOTIATE|ACCEPT_AS_IS", "suggested_change": "string" }
-    }
-  ],
-  "missing_clauses": ["string"]
-}`;
-
-            try {
-                // Switched to 1.5-flash for maximum stability/availability
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${appState.apiKey}`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: `Instructions:\n${systemPrompt}` }, { text: `Contract text:\n\n${doc.text}` }] }],
-                        generationConfig: { responseMimeType: "application/json" }
-                    })
-                });
-                
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error?.message || `HTTP Error ${response.status}`);
+            const payload = doc.analysis;
+            let output = `====================================================\n`;
+            output += `CLAUSELLM AUDIT REPORT — PRIVATE & CONFIDENTIAL\n`;
+            output += `====================================================\n\n`;
+            output += `Document Name: ${doc.name}\n`;
+            output += `Document Profile: ${payload.document_type || "Contract"}\n`;
+            output += `Overall Compliance Risk Level: ${payload.overall_risk_score || "MODERATE"}\n\n`;
+            
+            output += `STRATEGIC PRIORITIES TO ADDRESS BEFORE SIGNING:\n`;
+            (payload.top_3_priorities || []).forEach((p, i) => { output += `${i+1}. ${p}\n`; });
+            output += `\nNegotiation Leverage Note:\n"${payload.negotiation_leverage_note || ""}"\n\n`;
+            
+            output += `----------------------------------------------------\n`;
+            output += `FLAGGED KEY RISK DETECTIONS:\n`;
+            output += `----------------------------------------------------\n`;
+            (payload.risk_flags || []).forEach((flag, i) => {
+                output += `Risk #${i+1}: [${flag.risk_level}] - ${flag.category}\n`;
+                output += `Excerpt: "${flag.clause_excerpt}"\n`;
+                output += `Timing: ${flag.timing}\n`;
+                output += `Analysis: ${flag.explanation}\n`;
+                if(flag.recommendation) {
+                    output += `Action Plan: [${flag.recommendation.action}] - ${flag.recommendation.suggested_change}\n`;
                 }
-                
-                const json = await response.json();
-                let responseText = json.candidates[0].content.parts[0].text.trim();
-                
-                // Robustly strip Markdown formatting if Gemini includes it
-                if (responseText.startsWith('```json')) {
-                    responseText = responseText.replace(/^```json\n?/, '');
-                } else if (responseText.startsWith('```')) {
-                    responseText = responseText.replace(/^```\n?/, '');
-                }
-                if (responseText.endsWith('```')) {
-                    responseText = responseText.replace(/\n?```$/, '');
-                }
-                
-                doc.analysis = JSON.parse(responseText.trim());
-                doc.isProcessing = false;
-                showToast("Advanced Audit Complete!", "success");
-                setActiveDocument(doc.id);
-            } catch (err) {
-                console.error("Audit API Error:", err);
-                // Reveal the exact error (e.g., JSON parse issue or specific API key rejection)
-                if (err instanceof SyntaxError) {
-                    showToast("Audit failed: AI returned invalid data format.", "error");
-                } else {
-                    showToast(`API Error: ${err.message}`, "error");
-                }
-            } finally {
-                dom.globalProcessingBanner.classList.add('hidden');
+                output += `\n`;
+            });
+            
+            output += `\nMissing Protective Elements:\n`;
+            (payload.missing_clauses || []).forEach(c => { output += `- ${c}\n`; });
+            
+            output += `\n\nDisclaimer: This report is for informational purposes only and does not constitute official legal advice. Consult a qualified counselor prior to executing binding agreements.`;
+
+            // Download Blob File client side
+            const blob = new Blob([output], { type: "text/plain;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `ClauseLLM_Audit_${doc.name.replace(/\.[^/.]+$/, "")}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("Audit summary report exported!", "success");
+        }
+
+        // Active tab/navigation panes manager for mobile layouts
+        function setActiveMobilePane(pane) {
+            dom.sidebarPanel.classList.add('collapsed-panel');
+            dom.chatPanel.classList.add('collapsed-panel');
+            
+            // Clear selections
+            document.getElementById('m-btn-pool').className = "flex flex-col items-center gap-1 text-slate-400";
+            document.getElementById('m-btn-deck').className = "flex flex-col items-center gap-1 text-slate-400";
+            document.getElementById('m-btn-assistant').className = "flex flex-col items-center gap-1 text-slate-400";
+
+            if (pane === 'pool') {
+                dom.sidebarPanel.classList.remove('collapsed-panel');
+                document.getElementById('m-btn-pool').className = "flex flex-col items-center gap-1 text-red-600 dark:text-red-400";
+            } else if (pane === 'deck') {
+                switchTab('dashboard');
+                document.getElementById('m-btn-deck').className = "flex flex-col items-center gap-1 text-red-600 dark:text-red-400";
+            } else if (pane === 'assistant') {
+                dom.chatPanel.classList.remove('collapsed-panel');
+                document.getElementById('m-btn-assistant').className = "flex flex-col items-center gap-1 text-red-600 dark:text-red-400";
             }
         }
 
